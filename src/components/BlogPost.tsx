@@ -687,6 +687,21 @@ function parseInlineStyling(text: string): (string | React.ReactNode)[] {
   return elements;
 }
 
+const getBasePath = () => {
+  if (typeof window === 'undefined') return '';
+  const initialPath = window.location.pathname;
+  const segments = initialPath.split('/').filter(Boolean);
+  if (segments.length > 0) {
+    const firstSegment = segments[0];
+    const isKnownSlug = BLOG_POSTS.some(p => p.slug === firstSegment);
+    const isCategory = firstSegment === 'category';
+    if (!isKnownSlug && !isCategory) {
+      return `/${firstSegment}`;
+    }
+  }
+  return '';
+};
+
 export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [copiedLink, setCopiedLink] = useState(false);
@@ -699,8 +714,10 @@ export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
   const [commentContent, setCommentContent] = useState('');
   const [isCommentsExpanded, setIsCommentsExpanded] = useState(false);
 
+  const basePath = getBasePath();
+
   const handleNavigateToPost = (otherPost: BlogPost) => {
-    window.history.pushState(null, '', `/post/${otherPost.slug}`);
+    window.history.pushState(null, '', `${basePath}/${otherPost.slug}`);
     window.dispatchEvent(new Event('popstate'));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -1001,7 +1018,7 @@ export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
           <span className="text-gray-300">/</span>
           <button 
             onClick={() => {
-              window.history.pushState(null, '', `/category/${encodeURIComponent(post.category)}`);
+              window.history.pushState(null, '', `${basePath}/category/${encodeURIComponent(post.category)}`);
               window.dispatchEvent(new Event('popstate'));
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
