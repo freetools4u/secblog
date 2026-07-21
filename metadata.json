@@ -1,0 +1,6 @@
+{
+  "name": "Zenire Blog",
+  "description": "A high-performance, SEO-optimized blog platform covering AI Productivity, Careers, and Education.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
