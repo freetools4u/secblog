@@ -98,7 +98,7 @@ export default function BlogCard({ post, onClick }: BlogCardProps) {
       <div className="flex flex-col flex-1 p-3 sm:p-3.5 justify-between">
         <div className="mb-2">
           {/* Title */}
-          <h3 className="text-sm sm:text-base md:text-lg font-sans font-extrabold text-gray-900 group-hover:text-[#2563eb] transition-colors line-clamp-2 leading-snug tracking-tight mb-1">
+          <h3 className="text-sm sm:text-base md:text-lg font-sans font-extrabold text-gray-900 group-hover:text-[rgba(11,48,215)] transition-colors line-clamp-2 leading-snug tracking-tight mb-1">
             {post.title}
           </h3>
 

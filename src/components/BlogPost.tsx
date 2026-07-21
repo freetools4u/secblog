@@ -143,7 +143,7 @@ const RevealSection = ({ title, children }: RevealSectionProps) => {
         style={{ borderBottomColor: isOpen ? '#f3f4f6' : 'transparent' }}
       >
         <span className="text-sm sm:text-base font-sans font-extrabold text-gray-900 tracking-tight flex items-center gap-2">
-          <span className={`w-1.5 h-1.5 rounded-full bg-[#2563eb] transition-transform ${isOpen ? 'scale-125' : ''}`} />
+          <span className={`w-1.5 h-1.5 rounded-full bg-[rgba(11,48,215)] transition-transform ${isOpen ? 'scale-125' : ''}`} />
           {title}
         </span>
         <span className={`text-[10px] text-gray-400 font-mono transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
@@ -478,7 +478,7 @@ function parseMarkdown(md: string) {
       const content = line.replace(/^\[check\]/i, '').replace(/\[\/check\]/i, '').trim();
       htmlElements.push(
         <div key={`check-${index}`} className="flex items-start gap-2.5 my-2.5 text-left">
-          <CheckCircle className="w-4.5 h-4.5 text-[#2563eb] shrink-0 mt-0.5" />
+          <CheckCircle className="w-4.5 h-4.5 text-[rgba(11,48,215)] shrink-0 mt-0.5" />
           <span className="text-gray-700 text-base leading-relaxed font-sans">
             {parseInlineStyling(content)}
           </span>
@@ -513,7 +513,7 @@ function parseMarkdown(md: string) {
         const stepTitle = match[2];
         htmlElements.push(
           <div key={`step-${index}`} className="mt-8 mb-4 flex items-center gap-3 bg-gray-50/75 border border-gray-100 p-4.5 rounded-2xl shadow-xs text-left">
-            <span className="shrink-0 bg-gradient-to-r from-[#2563eb] to-[#1d4ed8] text-white text-[11px] font-mono font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-xs">
+            <span className="shrink-0 bg-gradient-to-r from-[rgba(0,143,255)] to-[rgba(11,48,215)] text-white text-[11px] font-mono font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-xs">
               {stepNum}
             </span>
             <h4 className="text-lg sm:text-xl font-sans font-extrabold text-gray-900 tracking-tight">
@@ -551,7 +551,7 @@ function parseMarkdown(md: string) {
     // Blockquote Check
     if (line.trim().startsWith('> ')) {
       htmlElements.push(
-        <blockquote key={`quote-${index}`} className="border-l-4 border-[#2563eb] pl-4 my-6 italic text-gray-700 bg-blue-50/20 py-2 rounded-r-lg">
+        <blockquote key={`quote-${index}`} className="border-l-4 border-[rgba(11,48,215)] pl-4 my-6 italic text-gray-700 bg-blue-50/20 py-2 rounded-r-lg">
           {line.replace(/^>\s+/, '')}
         </blockquote>
       );
@@ -647,7 +647,7 @@ function parseInlineStyling(text: string): (string | React.ReactNode)[] {
       splittedCode.forEach((cPart, cIdx) => {
         if (cIdx % 2 === 1) {
           elements.push(
-            <code key={`code-${idx}-${cIdx}`} className="bg-gray-100 text-[#2563eb] text-xs font-mono px-1.5 py-0.5 rounded-sm">
+            <code key={`code-${idx}-${cIdx}`} className="bg-gray-100 text-[rgba(11,48,215)] text-xs font-mono px-1.5 py-0.5 rounded-sm">
               {cPart}
             </code>
           );
@@ -667,7 +667,7 @@ function parseInlineStyling(text: string): (string | React.ReactNode)[] {
                   href={url} 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="text-[#2563eb] font-medium border-b border-dashed border-[#2563eb]/40 hover:border-[#2563eb] hover:text-[#1d4ed8] hover:bg-blue-50/30 transition-all px-0.5 rounded-xs"
+                  className="text-[rgba(11,48,215)] font-medium border-b border-dashed border-[rgba(11,48,215)]/40 hover:border-[rgba(11,48,215)] hover:text-[rgba(80,13,174)] hover:bg-blue-50/30 transition-all px-0.5 rounded-xs"
                 >
                   {label}
                 </a>
@@ -889,7 +889,7 @@ export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
               cx="50%"
               cy="50%"
               r="17"
-              className="stroke-[#2563eb] fill-none transition-all duration-75"
+              className="stroke-[rgba(11,48,215)] fill-none transition-all duration-75"
               strokeWidth="2.5"
               strokeDasharray="106.8"
               strokeDashoffset={106.8 - (106.8 * scrollProgress) / 100}
@@ -903,7 +903,7 @@ export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
             title={isShareExpanded ? "Collapse sharing options" : "Expand sharing options"}
             className={`relative w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all duration-300 cursor-pointer shadow-sm ${
               isShareExpanded 
-                ? 'bg-[#2563eb] text-white rotate-45' 
+                ? 'bg-gradient-to-r from-[rgba(0,143,255)] via-[rgba(11,48,215)] to-[rgba(80,13,174)] text-white rotate-45' 
                 : 'bg-white hover:bg-gray-50 text-gray-700'
             }`}
           >
@@ -972,7 +972,7 @@ export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
               onClick={() => setIsBookmarked(!isBookmarked)}
               title={isBookmarked ? "Bookmarked" : "Bookmark article"}
               className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all hover:scale-110 cursor-pointer ${
-                isBookmarked ? 'bg-[#2563eb] text-white' : 'bg-blue-50 text-[#2563eb] hover:bg-blue-100'
+                isBookmarked ? 'bg-[rgba(11,48,215)] text-white' : 'bg-blue-50 text-[rgba(11,48,215)] hover:bg-blue-100'
               }`}
             >
               <Bookmark className="w-3 h-3" />
@@ -983,7 +983,7 @@ export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
 
       {/* Scroll Progress Bar */}
       <div 
-        className="fixed top-0 left-0 h-1 bg-[#2563eb] z-50 transition-all duration-75"
+        className="fixed top-0 left-0 h-1 bg-gradient-to-r from-[rgba(0,143,255)] via-[rgba(11,48,215)] to-[rgba(80,13,174)] z-50 transition-all duration-75"
         style={{ width: `${scrollProgress}%` }}
       />
 
@@ -1239,7 +1239,7 @@ export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
                         href={`https://twitter.com/${post.author.twitter}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-gray-400 hover:text-[#2563eb] transition-colors p-1"
+                        className="text-gray-400 hover:text-[rgba(11,48,215)] transition-colors p-1"
                       >
                         <Twitter className="w-3.5 h-3.5" />
                       </a>
@@ -1249,7 +1249,7 @@ export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
                         href={`https://github.com/${post.author.github}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-gray-400 hover:text-[#2563eb] transition-colors p-1"
+                        className="text-gray-400 hover:text-[rgba(11,48,215)] transition-colors p-1"
                       >
                         <Github className="w-3.5 h-3.5" />
                       </a>
@@ -1267,7 +1267,7 @@ export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 rounded-2xl bg-[#FBFBF9] border border-gray-150">
                 <div>
                   <h3 className="text-base sm:text-lg font-sans font-extrabold text-gray-900 tracking-tight flex items-center gap-2">
-                    <MessageSquare className="w-5 h-5 text-[#2563eb]" />
+                    <MessageSquare className="w-5 h-5 text-[rgba(11,48,215)]" />
                     Reader Discussions ({comments.length})
                   </h3>
                   <p className="text-xs text-gray-500 mt-1 font-sans">
@@ -1276,7 +1276,7 @@ export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
                 </div>
                 <button
                   onClick={() => setIsCommentsExpanded(!isCommentsExpanded)}
-                  className="px-5 py-2.5 bg-gray-900 hover:bg-[#2563eb] text-white font-bold rounded-xl text-xs cursor-pointer transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-[#2563eb]/10 active:scale-98 shrink-0"
+                  className="px-5 py-2.5 bg-gray-900 hover:bg-[rgba(11,48,215)] text-white font-bold rounded-xl text-xs cursor-pointer transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-[rgba(11,48,215)]/10 active:scale-98 shrink-0"
                 >
                   <span>{isCommentsExpanded ? 'Hide Discussions' : 'Show Comments & Join'}</span>
                   <span className="bg-white/20 text-white rounded-full px-1.5 py-0.5 text-[9px] font-bold">
@@ -1298,7 +1298,7 @@ export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
                         value={commentName}
                         onChange={(e) => setCommentName(e.target.value)}
                         placeholder="Your Name"
-                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-800 focus:outline-hidden focus:ring-2 focus:ring-[#2563eb]/20 focus:border-[#2563eb]"
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-800 focus:outline-hidden focus:ring-2 focus:ring-[rgba(11,48,215)]/20 focus:border-[rgba(11,48,215)]"
                       />
                       <div className="text-[10px] text-gray-400 font-sans flex items-center sm:justify-end">
                         Comment moderation is active. Live instant preview.
@@ -1310,11 +1310,11 @@ export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
                       value={commentContent}
                       onChange={(e) => setCommentContent(e.target.value)}
                       placeholder="Add your insightful comment... Supports instant real-time discussion."
-                      className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-800 focus:outline-hidden focus:ring-2 focus:ring-[#2563eb]/20 focus:border-[#2563eb]"
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-800 focus:outline-hidden focus:ring-2 focus:ring-[rgba(11,48,215)]/20 focus:border-[rgba(11,48,215)]"
                     />
                     <button
                       type="submit"
-                      className="px-5 py-2.5 bg-[#2563eb] hover:bg-[#1d4ed8] text-white font-bold rounded-lg text-sm cursor-pointer transition-colors"
+                      className="px-5 py-2.5 bg-gradient-to-r from-[rgba(0,143,255)] to-[rgba(11,48,215)] hover:brightness-110 text-white font-bold rounded-lg text-sm cursor-pointer transition-all"
                     >
                       Post Discussion Comment
                     </button>
@@ -1423,7 +1423,7 @@ export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
                             <div className="flex-1 flex flex-col h-full py-1 min-w-0">
                               <div>
                                 {/* Title */}
-                                <h4 className="text-xs sm:text-base md:text-lg font-sans font-extrabold text-gray-900 group-hover:text-[#2563eb] transition-colors leading-tight sm:leading-snug tracking-tight mb-1">
+                                <h4 className="text-xs sm:text-base md:text-lg font-sans font-extrabold text-gray-900 group-hover:text-[rgba(11,48,215)] transition-colors leading-tight sm:leading-snug tracking-tight mb-1">
                                   {otherPost.title}
                                 </h4>
 
@@ -1455,7 +1455,7 @@ export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
                   {/* Most Popular Publications Section - Same layout language but slightly different! */}
                   <div className="pt-12 border-t border-gray-150 mt-12">
                     <div className="flex items-center gap-3 mb-1">
-                      <div className="bg-blue-50 p-2.5 text-[#2563eb] rounded-full flex items-center justify-center shrink-0">
+                      <div className="bg-blue-50 p-2.5 text-[rgba(11,48,215)] rounded-full flex items-center justify-center shrink-0">
                         <Flame className="w-5 h-5 fill-current" />
                       </div>
                       <div>
@@ -1489,7 +1489,7 @@ export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
                                   {popPost.readTime}
                                 </span>
                               </div>
-                              <h4 className="text-sm sm:text-base font-sans font-extrabold text-gray-900 group-hover:text-[#2563eb] transition-colors line-clamp-2 leading-snug tracking-tight mb-1">
+                              <h4 className="text-sm sm:text-base font-sans font-extrabold text-gray-900 group-hover:text-[rgba(11,48,215)] transition-colors line-clamp-2 leading-snug tracking-tight mb-1">
                                 {popPost.title}
                               </h4>
                               <p className="text-gray-500 text-xs leading-normal line-clamp-2">

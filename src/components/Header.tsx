@@ -32,7 +32,7 @@ export default function Header({
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-[#2563eb] shadow-md">
+      <header className="sticky top-0 z-40 bg-gradient-to-r from-[rgba(0,143,255)] via-[rgba(11,48,215)] to-[rgba(80,13,174)] shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-14 sm:h-15">
             
@@ -50,7 +50,7 @@ export default function Header({
                 onClick={() => handleCategorySelect('all')}
                 className="flex items-center gap-1.5 cursor-pointer group text-left"
               >
-                <div className="h-7 w-7 sm:h-8 sm:w-8 bg-white text-[#2563eb] rounded-md flex items-center justify-center font-sans font-extrabold text-xs sm:text-sm shadow-xs group-hover:scale-105 transition-transform">
+                <div className="h-7 w-7 sm:h-8 sm:w-8 bg-white text-[rgba(11,48,215)] rounded-md flex items-center justify-center font-sans font-extrabold text-xs sm:text-sm shadow-xs group-hover:scale-105 transition-transform">
                   Z
                 </div>
                 <span className="text-white font-sans font-black tracking-tight text-base sm:text-lg">
@@ -141,14 +141,14 @@ export default function Header({
               {/* Drawer Header */}
               <div className="p-4.5 border-b border-gray-50 flex items-center justify-between">
                 <div className="flex items-center gap-2 text-left">
-                  <div className="h-8 w-8 bg-[#2563eb] text-white rounded-lg flex items-center justify-center font-sans font-bold text-sm shadow-xs">
+                  <div className="h-8 w-8 bg-gradient-to-r from-[rgba(0,143,255)] via-[rgba(11,48,215)] to-[rgba(80,13,174)] text-white rounded-lg flex items-center justify-center font-sans font-bold text-sm shadow-xs">
                     Z
                   </div>
                   <div>
                     <span className="text-base font-sans font-bold text-gray-900 tracking-tight block leading-none">
                       Zenire
                     </span>
-                    <span className="text-[9px] font-mono font-medium tracking-wider text-[#2563eb] uppercase block mt-1.5">
+                    <span className="text-[9px] font-mono font-medium tracking-wider text-[rgba(11,48,215)] uppercase block mt-1.5">
                       Knowledge Menu
                     </span>
                   </div>
@@ -181,12 +181,12 @@ export default function Header({
                           onClick={() => handleCategorySelect(cat.id)}
                           className={`w-full text-left px-3 py-2 rounded-lg text-sm font-sans font-medium transition-all cursor-pointer flex items-center justify-between ${
                             isSelected
-                              ? 'bg-blue-50 text-[#2563eb] font-semibold'
+                              ? 'bg-blue-50 text-[rgba(11,48,215)] font-semibold'
                               : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                           }`}
                         >
                           <span>{cat.name}</span>
-                          {isSelected && <div className="h-1.5 w-1.5 rounded-full bg-[#2563eb]" />}
+                          {isSelected && <div className="h-1.5 w-1.5 rounded-full bg-[rgba(11,48,215)]" />}
                         </button>
                       );
                     })}

@@ -36,6 +36,21 @@ const CATEGORY_META: Record<string, { title: string; desc: string; accentColor: 
   }
 };
 
+const getBasePath = () => {
+  if (typeof window === 'undefined') return '';
+  const initialPath = window.location.pathname;
+  const segments = initialPath.split('/').filter(Boolean);
+  if (segments.length > 0) {
+    const firstSegment = segments[0];
+    const isKnownSlug = BLOG_POSTS.some(p => p.slug === firstSegment);
+    const isCategory = firstSegment === 'category';
+    if (!isKnownSlug && !isCategory) {
+      return `/${firstSegment}`;
+    }
+  }
+  return '';
+};
+
 export default function App() {
   const [posts, setPosts] = useState<BlogPost[]>(() => [...BLOG_POSTS]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -46,6 +61,8 @@ export default function App() {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [isNotFound, setIsNotFound] = useState(false);
   const [tickerIndex, setTickerIndex] = useState(0);
+
+  const basePath = getBasePath();
 
   // Auto-scroll the trending ticker
   useEffect(() => {
@@ -68,41 +85,40 @@ export default function App() {
       const pathName = window.location.pathname;
       setIsNotFound(false);
 
-      if (pathName.startsWith('/category/')) {
-        const catId = decodeURIComponent(pathName.replace('/category/', ''));
+      const categoryMatch = pathName.match(/\/category\/([^/]+)/);
+      if (categoryMatch) {
+        const catId = decodeURIComponent(categoryMatch[1]);
         setActiveCategory(catId);
         setSelectedPost(null);
         return;
-      } else if (pathName === '/' || pathName === '') {
+      }
+
+      // Match a known post slug anywhere in the path, typically at the end
+      const matchedPost = BLOG_POSTS.find(p => 
+        pathName === `/${p.slug}` || 
+        pathName.endsWith(`/${p.slug}`) || 
+        pathName.endsWith(`/${p.slug}/`)
+      );
+
+      if (matchedPost) {
+        const slug = matchedPost.slug;
+        setPosts(prev => {
+          const matched = prev.find(p => p.slug === slug) || matchedPost;
+          const updatedCount = (matched.readCount || 0) + 1;
+          setSelectedPost({ ...matched, readCount: updatedCount });
+          return prev.map(p => p.slug === slug ? { ...p, readCount: updatedCount } : p);
+        });
+        return;
+      }
+
+      const segments = pathName.split('/').filter(Boolean);
+      // On local/custom domain, segments.length is 0. On GitHub Pages, segments.length is 1 (the repo name).
+      if (segments.length <= 1) {
         setSelectedPost(null);
         setActiveCategory('all');
         return;
       }
 
-      // Try matching slug directly from path name for super SEO-friendly URL
-      let slug = pathName.replace(/^\//, '');
-      if (slug.startsWith('post/')) {
-        slug = slug.replace(/^post\//, '');
-      }
-      // Strip trailing slash
-      slug = slug.replace(/\/+$/, '');
-
-      const foundPost = BLOG_POSTS.find((p) => p.slug === slug);
-      if (foundPost) {
-        // Increment read count reactively in list
-        setPosts(prev => {
-          const matched = prev.find(p => p.slug === slug) || foundPost;
-          const updatedCount = (matched.readCount || 0) + 1;
-          
-          // Set selected post immediately
-          setSelectedPost({ ...matched, readCount: updatedCount });
-          
-          return prev.map(p => p.slug === slug ? { ...p, readCount: updatedCount } : p);
-        });
-        return;
-      }
-      
-      // Default fallback if path doesn't match any route
       setIsNotFound(true);
       setSelectedPost(null);
     };
@@ -141,22 +157,22 @@ export default function App() {
     );
     setSelectedPost({ ...post, readCount: updatedCount });
 
-    window.history.pushState(null, '', `/${post.slug}`);
+    window.history.pushState(null, '', `${basePath}/${post.slug}`);
     window.dispatchEvent(new Event('popstate'));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleBackToFeed = () => {
-    window.history.pushState(null, '', `/`);
+    window.history.pushState(null, '', `${basePath}/`);
     window.dispatchEvent(new Event('popstate'));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleCategorySelect = (catId: string) => {
     if (catId === 'all') {
-      window.history.pushState(null, '', `/`);
+      window.history.pushState(null, '', `${basePath}/`);
     } else {
-      window.history.pushState(null, '', `/category/${encodeURIComponent(catId)}`);
+      window.history.pushState(null, '', `${basePath}/category/${encodeURIComponent(catId)}`);
     }
     window.dispatchEvent(new Event('popstate'));
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -279,48 +295,47 @@ export default function App() {
                       <span className="text-gray-300">/</span>
                       <span className="text-gray-400 font-normal">Category</span>
                       <span className="text-gray-300">/</span>
-                      <span className="text-gray-500 font-semibold text-[#2563eb]">{activeCategory}</span>
+                      <span className="text-gray-500 font-semibold text-[rgba(11,48,215)]">{activeCategory}</span>
                     </nav>
                   </div>
                 )}
 
-                {/* Stylish Category Buttons Filter Row */}
-                <div className="mb-6.5">
-                  <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none select-none">
-                    <button
-                      onClick={() => {
-                        setActiveCategory('all');
-                        setCurrentPage(1);
-                      }}
-                      className={`px-3.5 py-1.5 rounded-full text-xs font-sans font-bold transition-all duration-200 cursor-pointer border shrink-0 ${
-                        activeCategory === 'all'
-                          ? 'bg-[#2563eb] text-white border-[#2563eb] shadow-xs'
-                          : 'bg-gray-50 text-gray-600 border-gray-200 hover:border-gray-300 hover:text-gray-900 shadow-3xs'
-                      }`}
-                    >
-                      All Archive
-                    </button>
-                    {Object.keys(CATEGORY_META).map((cat) => {
-                      const isActive = activeCategory === cat;
-                      return (
-                        <button
-                          key={cat}
-                          onClick={() => {
-                            setActiveCategory(cat);
-                            setCurrentPage(1);
-                          }}
-                          className={`px-3.5 py-1.5 rounded-full text-xs font-sans font-bold transition-all duration-200 cursor-pointer border shrink-0 ${
-                            isActive
-                              ? 'bg-[#2563eb] text-white border-[#2563eb] shadow-xs'
-                              : 'bg-gray-50 text-gray-600 border-gray-200 hover:border-gray-300 hover:text-gray-900 shadow-3xs'
-                          }`}
+                {/* Auto-scrolling Trending Post Ticker */}
+                {popularPosts.length > 0 && (
+                  <div className="mb-6.5 bg-[#FBFBF9] border border-gray-150 rounded-2xl px-4 py-3 flex items-center gap-3.5 overflow-hidden text-xs shadow-3xs">
+                    <div className="flex items-center gap-1.5 shrink-0 bg-gradient-to-r from-[rgba(0,143,255)] via-[rgba(11,48,215)] to-[rgba(80,13,174)] text-white font-mono font-black text-[9px] uppercase tracking-wider px-2.5 py-1 rounded-md select-none">
+                      <Flame className="w-3 h-3 fill-current animate-pulse" />
+                      <span>Trending</span>
+                    </div>
+                    <div className="flex-1 min-w-0 relative h-5 flex items-center">
+                      <AnimatePresence mode="wait">
+                        <motion.button
+                          key={tickerIndex}
+                          initial={{ y: 12, opacity: 0 }}
+                          animate={{ y: 0, opacity: 1 }}
+                          exit={{ y: -12, opacity: 0 }}
+                          transition={{ duration: 0.25 }}
+                          onClick={() => handleSelectPost(popularPosts[tickerIndex])}
+                          className="absolute inset-0 text-left w-full truncate font-medium text-gray-800 hover:text-[rgba(11,48,215)] cursor-pointer transition-colors focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 focus:outline-hidden focus-visible:outline-hidden"
                         >
-                          {cat}
-                        </button>
-                      );
-                    })}
+                          {popularPosts[tickerIndex]?.title}
+                        </motion.button>
+                      </AnimatePresence>
+                    </div>
+                    <div className="hidden sm:flex items-center gap-1.5 shrink-0">
+                      {popularPosts.slice(0, 5).map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setTickerIndex(idx)}
+                          className={`w-1.5 h-1.5 rounded-full transition-all duration-150 cursor-pointer focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 focus:outline-hidden focus-visible:outline-hidden ${
+                            idx === tickerIndex ? 'bg-[rgba(11,48,215)] scale-125' : 'bg-gray-200 hover:bg-gray-300'
+                          }`}
+                          title={`Go to trending post #${idx + 1}`}
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
                 
                 {/* Unified Layout with Left: Blog feed, Right: Popular sidebar */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-start">
@@ -335,7 +350,7 @@ export default function App() {
                       </h2>
                       {/* Stylish accent underline */}
                       <div className="absolute bottom-0 left-0 w-full h-[2px] bg-gray-100/80">
-                        <div className="w-12 h-full bg-[#2563eb] rounded-full" />
+                        <div className="w-12 h-full bg-gradient-to-r from-[rgba(0,143,255)] via-[rgba(11,48,215)] to-[rgba(80,13,174)] rounded-full" />
                       </div>
                     </div>
 
@@ -378,7 +393,7 @@ export default function App() {
                                   }}
                                   className={`w-7.5 h-7.5 rounded-lg flex items-center justify-center font-bold transition-all duration-150 cursor-pointer ${
                                     currentPage === page
-                                      ? 'bg-[#2563eb] text-white shadow-sm'
+                                      ? 'bg-gradient-to-r from-[rgba(0,143,255)] via-[rgba(11,48,215)] to-[rgba(80,13,174)] text-white shadow-sm'
                                       : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                                   }`}
                                 >
@@ -410,7 +425,7 @@ export default function App() {
                             handleCategorySelect('all');
                             setSearchQuery('');
                           }}
-                          className="mt-2 text-xs font-mono font-bold text-[#2563eb] hover:underline cursor-pointer"
+                          className="mt-2 text-xs font-mono font-bold text-[rgba(11,48,215)] hover:underline cursor-pointer"
                         >
                           Reset active queries
                         </button>
@@ -422,7 +437,7 @@ export default function App() {
                   {/* Right Column: Trending / Popular Publications Sidebar (No Border/Outline) */}
                   <aside className="lg:col-span-4 lg:sticky lg:top-20 space-y-5">
                     <div className="flex items-center gap-3">
-                      <div className="bg-blue-50 p-2.5 text-[#2563eb] rounded-full flex items-center justify-center shrink-0">
+                      <div className="bg-blue-50 p-2.5 text-[rgba(11,48,215)] rounded-full flex items-center justify-center shrink-0">
                         <Flame className="w-5 h-5 fill-current" />
                       </div>
                       <div>
@@ -457,7 +472,7 @@ export default function App() {
                                     {popPost.readTime}
                                   </span>
                                 </div>
-                                <h4 className="text-sm sm:text-base font-sans font-extrabold text-gray-900 group-hover:text-[#2563eb] transition-colors line-clamp-2 leading-snug tracking-tight mb-0.5">
+                                <h4 className="text-sm sm:text-base font-sans font-extrabold text-gray-900 group-hover:text-[rgba(11,48,215)] transition-colors line-clamp-2 leading-snug tracking-tight mb-0.5">
                                   {popPost.title}
                                 </h4>
                                 <p className="text-gray-500 text-xs leading-normal line-clamp-2">
@@ -477,7 +492,7 @@ export default function App() {
 
                     {/* Discover Footer Box */}
                     <div className="flex items-center gap-4 p-4 bg-blue-50/50 rounded-2xl">
-                      <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0 text-[#2563eb]">
+                      <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0 text-[rgba(11,48,215)]">
                         <Star className="w-5 h-5 fill-current" />
                       </div>
                       <div>
@@ -488,7 +503,7 @@ export default function App() {
                           onClick={() => {
                             window.scrollTo({ top: 0, behavior: 'smooth' });
                           }}
-                          className="mt-1 text-xs sm:text-sm font-sans font-black text-[#2563eb] hover:underline cursor-pointer flex items-center gap-1"
+                          className="mt-1 text-xs sm:text-sm font-sans font-black text-[rgba(11,48,215)] hover:underline cursor-pointer flex items-center gap-1"
                         >
                           Explore all articles <ArrowRight className="w-3 h-3" />
                         </button>

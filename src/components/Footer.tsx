@@ -33,7 +33,7 @@ export default function Footer({ onSelectCategory }: FooterProps) {
           <div className="lg:col-span-8 space-y-6">
             <div className="space-y-4">
               <div className="flex items-center gap-2.5">
-                <div className="h-8 w-8 bg-[#2563eb] text-white rounded-xl flex items-center justify-center font-display font-black text-sm tracking-tight shadow-lg shadow-blue-950/20">
+                <div className="h-8 w-8 bg-gradient-to-r from-[rgba(0,143,255)] via-[rgba(11,48,215)] to-[rgba(80,13,174)] text-white rounded-xl flex items-center justify-center font-display font-black text-sm tracking-tight shadow-lg shadow-blue-950/20">
                   Z
                 </div>
                 <span className="text-lg font-display font-black text-white tracking-tight">
@@ -48,7 +48,7 @@ export default function Footer({ onSelectCategory }: FooterProps) {
             {/* Premium Interactive Newsletter Presentation */}
             <div className="max-w-md pt-2">
               <h4 className="text-xs font-mono font-bold text-gray-300 uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-[#2563eb]" />
+                <Sparkles className="w-3.5 h-3.5 text-[rgba(11,48,215)]" />
                 <span>Join the elite list</span>
               </h4>
               <form onSubmit={handleSubscribe} className="relative flex items-center">
@@ -62,18 +62,18 @@ export default function Footer({ onSelectCategory }: FooterProps) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your expert email..."
-                    className="w-full bg-[#1b1b1a] border border-gray-800/80 rounded-xl py-2.5 pl-10 pr-28 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#2563eb]/60 focus:ring-1 focus:ring-[#2563eb]/20 transition-all duration-200"
+                    className="w-full bg-[#1b1b1a] border border-gray-800/80 rounded-xl py-2.5 pl-10 pr-28 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[rgba(11,48,215)]/60 focus:ring-1 focus:ring-[rgba(11,48,215)]/20 transition-all duration-200"
                   />
                   <button
                     type="submit"
-                    className="absolute right-1.5 top-1.5 bottom-1.5 bg-[#2563eb] hover:bg-[#1d4ed8] active:scale-95 text-white font-mono font-bold text-[10px] px-3.5 rounded-lg transition-all duration-150 cursor-pointer"
+                    className="absolute right-1.5 top-1.5 bottom-1.5 bg-gradient-to-r from-[rgba(0,143,255)] to-[rgba(11,48,215)] hover:brightness-110 active:scale-95 text-white font-mono font-bold text-[10px] px-3.5 rounded-lg transition-all duration-150 cursor-pointer"
                   >
                     Subscribe
                   </button>
                 </div>
               </form>
               {subscribed && (
-                <p className="text-[11px] font-mono text-[#2563eb] mt-2 animate-pulse">
+                <p className="text-[11px] font-mono text-[rgba(11,48,215)] mt-2 animate-pulse">
                   ✓ Connection established. Welcome to the loop.
                 </p>
               )}
@@ -94,7 +94,7 @@ export default function Footer({ onSelectCategory }: FooterProps) {
                   }}
                   className="text-gray-400 hover:text-white transition-colors cursor-pointer flex items-center gap-2"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#2563eb]/40" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[rgba(11,48,215)]/40" />
                   <span>All Archives</span>
                 </button>
               </li>
@@ -106,7 +106,7 @@ export default function Footer({ onSelectCategory }: FooterProps) {
                   }}
                   className="text-gray-400 hover:text-white transition-colors cursor-pointer flex items-center gap-2"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#2563eb]/40" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[rgba(11,48,215)]/40" />
                   <span>AI Productivity & Tools</span>
                 </button>
               </li>
@@ -118,7 +118,7 @@ export default function Footer({ onSelectCategory }: FooterProps) {
                   }}
                   className="text-gray-400 hover:text-white transition-colors cursor-pointer flex items-center gap-2"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#2563eb]/40" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[rgba(11,48,215)]/40" />
                   <span>Career & Growth</span>
                 </button>
               </li>
@@ -130,7 +130,7 @@ export default function Footer({ onSelectCategory }: FooterProps) {
                   }}
                   className="text-gray-400 hover:text-white transition-colors cursor-pointer flex items-center gap-2"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#2563eb]/40" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[rgba(11,48,215)]/40" />
                   <span>Education Blueprints</span>
                 </button>
               </li>
@@ -149,14 +149,14 @@ export default function Footer({ onSelectCategory }: FooterProps) {
                 href="/sitemap.xml" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="hover:text-white transition-colors underline decoration-gray-800 hover:decoration-[#2563eb]"
+                className="hover:text-white transition-colors underline decoration-gray-800 hover:decoration-[rgba(11,48,215)]"
               >
                 Sitemap (XML)
               </a>
             </div>
             <div className="flex items-center justify-center sm:justify-start gap-1 text-[10px] text-gray-500 font-mono">
               <span>Optimized with</span>
-              <Heart className="w-3 h-3 text-[#2563eb] fill-current" />
+              <Heart className="w-3 h-3 text-[rgba(11,48,215)] fill-current" />
               <span>for maximum performance</span>
             </div>
           </div>
