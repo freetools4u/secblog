@@ -114,7 +114,7 @@ export default function Footer({ onSelectCategory }: FooterProps) {
               </li>
               <li>
                 <a
-                  href="/category/AI%20Productivity"
+                  href="/category/ai-productivity"
                   onClick={(e) => {
                     e.preventDefault();
                     onSelectCategory('AI Productivity');
@@ -128,7 +128,7 @@ export default function Footer({ onSelectCategory }: FooterProps) {
               </li>
               <li>
                 <a
-                  href="/category/Career%20%26%20Hiring"
+                  href="/category/career-hiring"
                   onClick={(e) => {
                     e.preventDefault();
                     onSelectCategory('Career & Hiring');
@@ -142,7 +142,7 @@ export default function Footer({ onSelectCategory }: FooterProps) {
               </li>
               <li>
                 <a
-                  href="/category/Education"
+                  href="/category/education"
                   onClick={(e) => {
                     e.preventDefault();
                     onSelectCategory('Education');
@@ -156,7 +156,7 @@ export default function Footer({ onSelectCategory }: FooterProps) {
               </li>
               <li>
                 <a
-                  href="/category/Design%20%26%20Focus"
+                  href="/category/design-focus"
                   onClick={(e) => {
                     e.preventDefault();
                     onSelectCategory('Design & Focus');
