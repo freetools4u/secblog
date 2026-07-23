@@ -6,7 +6,7 @@ export const post: BlogPost = {
   title: 'Lovable AI Review (2026): Can Anyone Really Build Full-Stack Apps Without Coding?',
   excerpt:
     'A complete hands-on review of Lovable AI after building real applications. Learn how Lovable works, its features, pricing, strengths, weaknesses, and whether it is worth using in 2026.',
-  category: 'AI Productivity',
+  category: 'ai-productivity',
   tags: [
     'Lovable',
     'Lovable AI',
@@ -20,8 +20,8 @@ export const post: BlogPost = {
   readTime: '19 min read',
   date: '2026-07-23',
   author: {
-    name: 'Saif Ansari',
-    role: 'Founder & Editor, Zenire',
+    name: 'MD Saif Ansari',
+    role: 'Editor, ZenireBlog',
     avatar:
       'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
     bio:
