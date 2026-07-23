@@ -6,7 +6,7 @@ export const post: BlogPost = {
   title: 'How to Automate Your Entire Workday Using AI (2026 Step-by-Step Blueprint)',
   excerpt:
     'A practical framework to automate up to 80% of your daily administrative drag using autonomous AI agents, smart prompt blueprints, and connected workflow loops.',
-  category: 'AI Productivity',
+  category: 'ai-productivity',
   tags: [
     'AI Automation',
     'AI Productivity',
@@ -20,8 +20,8 @@ export const post: BlogPost = {
   readTime: '12 min read',
   date: '2026-07-23',
   author: {
-    name: 'Saif Ansari',
-    role: 'Founder & Editor, Zenire',
+    name: 'MD Saif Ansari',
+    role: 'Editor, ZenireBLog',
     avatar:
       'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
     bio:
