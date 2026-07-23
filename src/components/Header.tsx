@@ -19,10 +19,10 @@ export default function Header({
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const curatedCategories = [
-    { name: 'AI Productivity', id: 'AI Productivity' },
-    { name: 'Career & Hiring', id: 'Career & Hiring' },
-    { name: 'Education', id: 'Education' },
-    { name: 'Design & Focus', id: 'Design & Focus' }
+    { name: 'AI Productivity', id: 'ai-productivity' },
+    { name: 'Career & Hiring', id: 'career-hiring' },
+    { name: 'Education', id: 'education' },
+    { name: 'Design & Focus', id: 'design-focus' }
   ];
 
   const handleCategorySelect = (id: string) => {
