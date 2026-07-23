@@ -6,7 +6,7 @@ export const post: BlogPost = {
   title: '25 Best AI Productivity Tools in 2026 (Tested & Ranked)',
   excerpt:
     'Our hands-on benchmark of the 25 top AI productivity tools in 2026. Discover tested solutions for writing, coding, email, automation, meetings, and workflow optimization.',
-  category: 'AI Productivity',
+  category: 'ai-productivity',
   tags: [
     'AI Tools',
     'Productivity',
@@ -22,8 +22,8 @@ export const post: BlogPost = {
   readTime: '22 min read',
   date: '2026-07-23',
   author: {
-    name: 'Saif Ansari',
-    role: 'Founder & Editor, Zenire',
+    name: 'MD Saif Ansari',
+    role: 'Editor, ZenireBlog',
     avatar:
       'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
     bio:
