@@ -6,6 +6,7 @@ import post3 from './building-ai-proof-resume-2026';
 import post4 from './personalized-knowledge-graphs-education';
 import post5 from './perfect-context-window-llm-2026';
 import post6 from './psychology-digital-minimalism-2026';
+import post6 from './ai-productivity-blueprint-2026';
 
 export const ARTICLES: BlogPost[] = [
   post1,
@@ -13,7 +14,8 @@ export const ARTICLES: BlogPost[] = [
   post3,
   post4,
   post5,
-  post6
+  post6,
+  post7
 ];
 
 export const getArticleBySlug = (slug: string): BlogPost | undefined => {
