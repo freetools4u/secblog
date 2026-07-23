@@ -47,10 +47,14 @@ export default function Header({
               </button>
 
               <a
-                href="/category"
+                href="https://blog.zenire.in"
                 onClick={(e) => {
-                  e.preventDefault();
-                  handleCategorySelect('all');
+                  if (!e.ctrlKey && !e.metaKey) {
+                    if (typeof window !== 'undefined' && (window.location.hostname === 'blog.zenire.in' || window.location.hostname === 'localhost' || window.location.hostname.includes('run.app'))) {
+                      e.preventDefault();
+                      handleCategorySelect('all');
+                    }
+                  }
                 }}
                 className="flex items-center gap-1.5 cursor-pointer group text-left"
               >

@@ -1504,7 +1504,7 @@ export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
   }, []);
 
   const handleCopyLink = () => {
-    const fullUrl = `https://blog.zenire.in/post/${post.slug}`;
+    const fullUrl = typeof window !== 'undefined' ? `${window.location.origin}/${post.slug}` : `https://blog.zenire.in/${post.slug}`;
     navigator.clipboard.writeText(fullUrl);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);

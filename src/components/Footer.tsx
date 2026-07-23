@@ -23,23 +23,35 @@ export default function Footer({ onSelectCategory }: FooterProps) {
   };
 
   return (
-    <footer className="bg-[#121211] text-gray-400 pt-8 pb-10 border-t border-gray-900/40 font-sans">
+    <footer className="bg-[#121211] text-gray-400 pt-8 pb-10 border-t border-slate-800/40 font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start pb-12 border-b border-gray-800/60">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start pb-12 border-b border-slate-800/40">
           
           {/* Column 1: Brand Pitch & Newsletter */}
           <div className="lg:col-span-8 space-y-6">
             <div className="space-y-4">
-              <div className="flex items-center gap-2.5">
-                <div className="h-8 w-8 bg-gradient-to-r from-[rgba(0,143,255)] via-[rgba(11,48,215)] to-[rgba(80,13,174)] text-white rounded-xl flex items-center justify-center font-display font-black text-sm tracking-tight shadow-lg shadow-blue-950/20">
+              <a
+                href="https://blog.zenire.in"
+                onClick={(e) => {
+                  if (!e.ctrlKey && !e.metaKey) {
+                    if (typeof window !== 'undefined' && (window.location.hostname === 'blog.zenire.in' || window.location.hostname === 'localhost' || window.location.hostname.includes('run.app'))) {
+                      e.preventDefault();
+                      onSelectCategory('all');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  }
+                }}
+                className="flex items-center gap-2.5 group cursor-pointer"
+              >
+                <div className="h-8 w-8 bg-gradient-to-r from-[rgba(0,143,255)] via-[rgba(11,48,215)] to-[rgba(80,13,174)] text-white rounded-xl flex items-center justify-center font-display font-black text-sm tracking-tight shadow-lg shadow-blue-950/20 group-hover:scale-105 transition-transform">
                   Z
                 </div>
                 <span className="text-lg font-display font-black text-white tracking-tight">
                   Zenire <span className="text-gray-400 font-light">Knowledge</span>
                 </span>
-              </div>
+              </a>
               <p className="text-sm text-gray-400 leading-relaxed max-w-md">
                 Publishing curated engineering concepts, career blueprints, and educational insights for high performance and elite readability.
               </p>
