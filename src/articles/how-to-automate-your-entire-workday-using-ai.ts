@@ -29,7 +29,7 @@ export const post: BlogPost = {
     twitter: 'zenirein',
     github: 'freetools4u'
   },
-  coverImage: '/images/ai_workday_automation.jpg',
+  coverImage: 'images/ai_workday_automation.jpg',
   keywords: [
     'How to automate workday with AI',
     'AI workday automation blueprint',
