@@ -6,7 +6,7 @@ import post3 from './building-ai-proof-resume-2026';
 import post4 from './personalized-knowledge-graphs-education';
 import post5 from './perfect-context-window-llm-2026';
 import post6 from './psychology-digital-minimalism-2026';
-import post6 from './ai-productivity-blueprint-2026';
+import post7 from './ai-productivity-blueprint-2026';
 
 export const ARTICLES: BlogPost[] = [
   post1,
