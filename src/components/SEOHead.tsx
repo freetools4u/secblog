@@ -86,7 +86,7 @@ export default function SEOHead({ title, description, keywords, canonicalUrl, po
             "name": "Zenire",
             "logo": {
               "@type": "ImageObject",
-              "url": "https://blog.zenire.in/favicon.ico"
+              "url": "https://zenire.in/favicon.ico"
             }
           },
           "potentialAction": {
@@ -103,25 +103,25 @@ export default function SEOHead({ title, description, keywords, canonicalUrl, po
             {
               "@type": "WebPage",
               "name": "AI Productivity",
-              "url": "https://blog.zenire.in/category/AI%20Productivity",
+              "url": "https://blog.zenire.in/category/ai-productivity",
               "description": "Prompt engineering, automated workflows, and agentic productivity tools."
             },
             {
               "@type": "WebPage",
               "name": "Career & Hiring",
-              "url": "https://blog.zenire.in/category/Career%20%26%20Hiring",
+              "url": "https://blog.zenire.in/category/career-hiring",
               "description": "CV construction, technical recruitment trends, and professional advancement."
             },
             {
               "@type": "WebPage",
               "name": "Education",
-              "url": "https://blog.zenire.in/category/Education",
+              "url": "https://blog.zenire.in/category/education",
               "description": "Cognitive learning frameworks, personalized knowledge graphs, and pedagogy."
             },
             {
               "@type": "WebPage",
               "name": "Design & Focus",
-              "url": "https://blog.zenire.in/category/Design%20%26%20Focus",
+              "url": "https://blog.zenire.in/category/design-focus",
               "description": "Digital minimalism, ergonomics, and peak mental performance environments."
             }
           ]
@@ -135,25 +135,25 @@ export default function SEOHead({ title, description, keywords, canonicalUrl, po
               "@type": "SiteNavigationElement",
               "position": 1,
               "name": "AI Productivity",
-              "url": "https://blog.zenire.in/category/AI%20Productivity"
+              "url": "https://blog.zenire.in/category/ai-productivity"
             },
             {
               "@type": "SiteNavigationElement",
               "position": 2,
               "name": "Career & Hiring",
-              "url": "https://blog.zenire.in/category/Career%20%26%20Hiring"
+              "url": "https://blog.zenire.in/category/career-hiring"
             },
             {
               "@type": "SiteNavigationElement",
               "position": 3,
               "name": "Education",
-              "url": "https://blog.zenire.in/category/Education"
+              "url": "https://blog.zenire.in/category/education"
             },
             {
               "@type": "SiteNavigationElement",
               "position": 4,
               "name": "Site Categories: Design & Focus",
-              "url": "https://blog.zenire.in/category/Design%20%26%20Focus"
+              "url": "https://blog.zenire.in/category/design-focus"
             }
           ]
         }
@@ -182,7 +182,7 @@ export default function SEOHead({ title, description, keywords, canonicalUrl, po
           "name": "Zenire",
           "logo": {
             "@type": "ImageObject",
-            "url": "https://blog.zenire.in/favicon.ico"
+            "url": "https:/zenire.in/favicon.ico"
           }
         },
         "datePublished": post.date,
