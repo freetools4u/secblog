@@ -83,37 +83,56 @@ export default function App() {
       const pageParam = parseInt(searchParams.get('page') || '1', 10);
       const urlPage = isNaN(pageParam) || pageParam < 1 ? 1 : pageParam;
 
-      setIsNotFound(false);
-
       const pageMatch = pathName.match(/\/page\/(\d+)/);
       const pageFromPath = pageMatch ? parseInt(pageMatch[1], 10) : null;
       const effectivePage = pageFromPath || urlPage;
 
-      // Check if it's the category overview page (/category or /category/) or category detail
-      if (pathName.endsWith('/category') || pathName.endsWith('/category/') || pathName.includes('/category')) {
-        const categoryMatch = pathName.match(/\/category\/([^/]+)/);
-        if (categoryMatch) {
-          const catId = decodeURIComponent(categoryMatch[1]);
-          setActiveCategory(catId);
+      // Clean pathname without trailing slashes (except root '/')
+      const cleanPath = pathName.replace(/\/+$/, '') || '/';
+
+      // 1. Root / Home Page routes: '/', '/index.html', or page routes like '/page/2'
+      if (cleanPath === '/' || cleanPath === '/index.html' || cleanPath.startsWith('/page/')) {
+        setSelectedPost(null);
+        setActiveCategory('all');
+        setCurrentPage(effectivePage);
+        setIsNotFound(false);
+        return;
+      }
+
+      // 2. Category routes: '/category' or '/category/:name'
+      if (cleanPath === '/category') {
+        setSelectedPost(null);
+        setActiveCategory('all');
+        setCurrentPage(effectivePage);
+        setIsNotFound(false);
+        return;
+      }
+
+      const categoryMatch = cleanPath.match(/^\/category\/(.+)$/);
+      if (categoryMatch) {
+        const rawCatName = decodeURIComponent(categoryMatch[1]).trim();
+        const validCategories = Object.keys(CATEGORY_META);
+        const matchedCategory = validCategories.find(
+          c => c.toLowerCase() === rawCatName.toLowerCase()
+        );
+
+        if (matchedCategory) {
+          setActiveCategory(matchedCategory);
           setSelectedPost(null);
           setCurrentPage(effectivePage);
           setIsNotFound(false);
           return;
         } else {
-          setActiveCategory('all');
+          // Invalid category -> 404!
+          setIsNotFound(true);
           setSelectedPost(null);
-          setCurrentPage(effectivePage);
-          setIsNotFound(false);
           return;
         }
       }
 
-      // Match a known post slug anywhere in the path, typically at the end
-      const matchedPost = BLOG_POSTS.find(p => 
-        pathName === `/${p.slug}` || 
-        pathName.endsWith(`/${p.slug}`) || 
-        pathName.endsWith(`/${p.slug}/`)
-      );
+      // 3. Article routes: '/:slug'
+      const rawSlug = cleanPath.startsWith('/') ? cleanPath.slice(1) : cleanPath;
+      const matchedPost = BLOG_POSTS.find(p => p.slug === rawSlug);
 
       if (matchedPost) {
         const slug = matchedPost.slug;
@@ -123,17 +142,11 @@ export default function App() {
           setSelectedPost({ ...matched, readCount: updatedCount });
           return prev.map(p => p.slug === slug ? { ...p, readCount: updatedCount } : p);
         });
+        setIsNotFound(false);
         return;
       }
 
-      const segments = pathName.split('/').filter(Boolean);
-      if (segments.length <= 1 || pageMatch) {
-        setSelectedPost(null);
-        setActiveCategory('all');
-        setCurrentPage(effectivePage);
-        return;
-      }
-
+      // 4. Any other URL is a wrong URL -> trigger 404!
       setIsNotFound(true);
       setSelectedPost(null);
     };

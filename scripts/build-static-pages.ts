@@ -191,6 +191,18 @@ ${postUrlsXml}
   }
   console.log(' ✓ Dynamically generated sitemap.xml in dist/ and public/');
 
+  const robotsContent = `User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://blog.zenire.in/sitemap.xml
+`;
+  fs.writeFileSync(path.resolve(distDir, 'robots.txt'), robotsContent, 'utf-8');
+  if (fs.existsSync(publicDir)) {
+    fs.writeFileSync(path.resolve(publicDir, 'robots.txt'), robotsContent, 'utf-8');
+  }
+  console.log(' ✓ Generated robots.txt in dist/ and public/');
+
   console.log('Static pages generation completed successfully!');
 }
 

@@ -100,6 +100,18 @@ async function startServer() {
     }
   });
 
+  // Dynamic Robots.txt Endpoint
+  app.get("/robots.txt", (req, res) => {
+    res.header("Content-Type", "text/plain");
+    res.status(200).send(`User-agent: *
+Allow: /
+Disallow: /api/
+
+# Sitemap link for Google Search Console (GSC)
+Sitemap: https://blog.zenire.in/sitemap.xml
+`);
+  });
+
   // API endpoints for comments
   app.get("/api/comments/:slug", (req, res) => {
     const { slug } = req.params;

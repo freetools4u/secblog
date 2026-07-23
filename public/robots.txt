@@ -1,0 +1,9 @@
+# Zenire Knowledge Robots File
+# https://blog.zenire.in
+
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# Sitemap index for Google Search Console (GSC)
+Sitemap: https://blog.zenire.in/sitemap.xml
