@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BlogPost } from '../types';
 import { BLOG_POSTS } from '../data/blogPosts';
-import { ArrowLeft, Calendar, Clock, Share2, Twitter, Linkedin, Github, Copy, Check, Bookmark, Heart, Trash2, MessageSquare, MessageCircle, Slack, Phone, Facebook, Info, AlertTriangle, Lightbulb, CheckCircle, Quote, Home, ChevronRight, BookOpen, ArrowRight, Flame, Star } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Share2, Twitter, Linkedin, Github, Copy, Check, Bookmark, Heart, Trash2, MessageSquare, MessageCircle, Slack, Phone, Facebook, Info, AlertTriangle, Lightbulb, CheckCircle, Quote, Home, ChevronRight, BookOpen, ArrowRight, Flame, Star, ListFilter, Table, Search, X } from 'lucide-react';
 import { getCategoryStyle } from './BlogCard';
 
 const getInitials = (name: string) => {
@@ -29,7 +29,7 @@ interface BlogPostProps {
   onBack: () => void;
 }
 
-// Custom high-fidelity components for rich media in articles
+// Custom high-fidelity Pinterest Icon
 const PinterestIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
     <path d="M12 0C5.37 0 0 5.37 0 12c0 5.08 3.16 9.42 7.64 11.17-.1-.95-.19-2.41.04-3.45.21-.93 1.35-5.74 1.35-5.74s-.34-.69-.34-1.71c0-1.6 1.41-2.8 2.51-2.8.96 0 1.41.72 1.41 1.58 0 .96-.61 2.4-.93 3.73-.26 1.13.57 2.05 1.69 2.05 2.03 0 3.59-2.14 3.59-5.23 0-2.74-1.97-4.65-4.78-4.65-3.26 0-5.17 2.44-5.17 4.97 0 .98.38 2.04.85 2.61.09.11.11.21.08.33l-.32 1.3c-.05.21-.17.26-.39.16-1.46-.68-2.38-2.81-2.38-4.52 0-3.68 2.67-7.06 7.71-7.06 4.05 0 7.2 2.89 7.2 6.75 0 4.02-2.54 7.26-6.06 7.26-1.18 0-2.3-.61-2.68-1.34l-.73 2.79c-.26.98-.98 2.21-1.46 2.99C9.9 23.68 10.93 24 12 24c6.63 0 12-5.37 12-12S18.63 0 12 0z"/>
@@ -46,15 +46,15 @@ interface BlogImageProps {
 const BlogImage = ({ src, alt, caption }: BlogImageProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
-  const pinterestShareUrl = `https://www.pinterest.com/pin/create/button/?url=${encodeURIComponent(pageUrl)}&media=${encodeURIComponent(src)}&description=${encodeURIComponent(alt || caption || 'Modern Zenire Publication Blueprint')}`;
+  const pinterestShareUrl = `https://www.pinterest.com/pin/create/button/?url=${encodeURIComponent(pageUrl)}&media=${encodeURIComponent(src)}&description=${encodeURIComponent(alt || caption || 'Zenire Article Visual')}`;
 
   return (
     <div 
-      className="my-8 text-center"
+      className="my-8 text-center group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative inline-block max-w-full overflow-hidden rounded-2xl border border-gray-200/80 shadow-sm transition-all duration-300 hover:shadow-md bg-gray-50">
+      <div className="relative inline-block max-w-full overflow-hidden rounded-2xl border border-gray-200/80 shadow-xs transition-all duration-300 hover:shadow-md bg-gray-50">
         <img
           src={src}
           alt={alt}
@@ -63,21 +63,21 @@ const BlogImage = ({ src, alt, caption }: BlogImageProps) => {
         />
         
         {/* Pinterest Float Button */}
-        <div className={`absolute inset-0 bg-black/5 flex items-start justify-end p-4 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <div className={`absolute inset-0 bg-black/10 flex items-start justify-end p-4 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
           <a
             href={pinterestShareUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-[#E60023] text-white font-sans font-bold text-[11px] uppercase tracking-wider px-3.5 py-2 rounded-full flex items-center gap-1.5 shadow-lg hover:bg-[#b8001c] active:scale-95 transition-all cursor-pointer pointer-events-auto"
+            className="bg-[#E60023] text-white font-sans font-extrabold text-[11px] uppercase tracking-wider px-3.5 py-2 rounded-full flex items-center gap-1.5 shadow-lg hover:bg-[#b8001c] active:scale-95 transition-all cursor-pointer pointer-events-auto"
             title="Pin it on Pinterest"
           >
             <PinterestIcon className="w-3.5 h-3.5 fill-current" />
-            <span>Save</span>
+            <span>Save Pin</span>
           </a>
         </div>
       </div>
       {caption && (
-        <p className="mt-2 text-xs font-mono text-gray-400 max-w-lg mx-auto leading-relaxed italic">
+        <p className="mt-2 text-xs font-mono text-gray-500 max-w-lg mx-auto leading-relaxed italic">
           {caption}
         </p>
       )}
@@ -127,6 +127,71 @@ const VideoBlock = ({ url }: VideoBlockProps) => {
   );
 };
 
+interface CodeBlockProps {
+  code: string;
+  title?: string;
+  language?: string;
+  key?: string | number;
+}
+
+const CodeBlock = ({ code, title = "Prompt & Code Blueprint", language = "PROMPT" }: CodeBlockProps) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2200);
+  };
+
+  return (
+    <div className="my-6 rounded-2xl bg-[#0f172a] text-slate-100 overflow-hidden border border-slate-800 shadow-md font-mono text-left">
+      {/* Header Bar */}
+      <div className="flex items-center justify-between px-4 py-2.5 bg-slate-900/90 border-b border-slate-800 text-xs text-slate-400 select-none">
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+            <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
+            <span className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
+          </div>
+          <span className="ml-2 font-sans font-bold text-slate-200 tracking-wide">
+            {title}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <span className="text-[10px] uppercase tracking-wider font-mono px-2 py-0.5 rounded-md bg-slate-800 text-slate-400 font-semibold">
+            {language}
+          </span>
+          <button
+            onClick={handleCopy}
+            className="flex items-center gap-1.5 text-xs text-slate-200 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-lg transition-all cursor-pointer font-sans font-bold shadow-xs active:scale-95"
+            title="Copy to clipboard"
+          >
+            {copied ? (
+              <>
+                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="text-emerald-400 font-bold">Copied!</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-3.5 h-3.5" />
+                <span>Copy Prompt</span>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Code Body */}
+      <div className="p-4 sm:p-5 overflow-x-auto text-xs sm:text-sm leading-relaxed text-slate-200 bg-[#0b1120]">
+        <pre className="whitespace-pre-wrap break-words font-mono text-slate-200">
+          {code}
+        </pre>
+      </div>
+    </div>
+  );
+};
+
 interface RevealSectionProps {
   title: string;
   children: React.ReactNode;
@@ -136,22 +201,22 @@ interface RevealSectionProps {
 const RevealSection = ({ title, children }: RevealSectionProps) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="my-6 border border-gray-200/80 rounded-2xl bg-white overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.015)]">
+    <div className="my-6 border border-gray-200/80 rounded-2xl bg-white overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.015)] text-left">
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-4.5 bg-gray-50/40 hover:bg-gray-50/90 text-left font-sans font-bold text-gray-800 transition-colors cursor-pointer select-none border-b border-transparent"
+        className="w-full flex items-center justify-between p-4.5 bg-gray-50/60 hover:bg-gray-100/80 text-left font-sans font-bold text-gray-800 transition-colors cursor-pointer select-none border-b border-transparent"
         style={{ borderBottomColor: isOpen ? '#f3f4f6' : 'transparent' }}
       >
         <span className="text-sm sm:text-base font-sans font-extrabold text-gray-900 tracking-tight flex items-center gap-2">
-          <span className={`w-1.5 h-1.5 rounded-full bg-[rgba(11,48,215)] transition-transform ${isOpen ? 'scale-125' : ''}`} />
+          <span className={`w-2 h-2 rounded-full bg-[rgba(11,48,215)] transition-transform ${isOpen ? 'scale-125' : ''}`} />
           {title}
         </span>
-        <span className={`text-[10px] text-gray-400 font-mono transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+        <span className="text-[10px] text-[rgba(11,48,215)] font-mono font-bold tracking-wider px-2.5 py-1 rounded-full bg-blue-50">
           {isOpen ? 'COLLAPSE ▲' : 'EXPAND ▼'}
         </span>
       </button>
       {isOpen && (
-        <div className="p-5 text-sm sm:text-[15px] text-gray-700 leading-relaxed bg-white/50 border-t border-gray-50 font-sans">
+        <div className="p-5 text-sm sm:text-[15px] text-gray-700 leading-relaxed bg-white/50 border-t border-gray-100 font-sans">
           {children}
         </div>
       )}
@@ -159,12 +224,395 @@ const RevealSection = ({ title, children }: RevealSectionProps) => {
   );
 };
 
-// Simple but powerful custom Markdown parser to keep bundle size 0 and load speeds at 100%
+// Formats individual table cell values into badges, tags, or inline styled text
+function formatTableCell(content: string): React.ReactNode {
+  const trimmed = content.trim();
+  const lower = trimmed.toLowerCase();
+
+  if (trimmed === '[yes]' || trimmed === '[Yes]' || lower === 'yes' || trimmed === '✔' || trimmed === '✓' || trimmed === '[check]' || trimmed === '[supported]') {
+    return (
+      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-2xs shrink-0">
+        <Check className="w-3 h-3 stroke-[3]" />
+        <span>Yes</span>
+      </span>
+    );
+  }
+
+  if (trimmed === '[no]' || trimmed === '[No]' || lower === 'no' || trimmed === '✖' || trimmed === '✕' || trimmed === '[x]' || trimmed === '[not supported]') {
+    return (
+      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200/80 shadow-2xs shrink-0">
+        <span className="text-rose-500 font-extrabold text-[10px]">✕</span>
+        <span>No</span>
+      </span>
+    );
+  }
+
+  if (trimmed === '[partial]' || trimmed === '[Partial]' || lower === 'partial' || trimmed === '[limited]') {
+    return (
+      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200/80 shadow-2xs shrink-0">
+        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+        <span>Partial</span>
+      </span>
+    );
+  }
+
+  if (trimmed === '[pro]' || trimmed === '[Pro]' || trimmed === '[popular]' || trimmed === '[Popular]' || trimmed === '[featured]' || trimmed === '[Featured]') {
+    return (
+      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-purple-50 text-purple-700 border border-purple-200/80 shadow-2xs shrink-0">
+        <Star className="w-3 h-3 fill-purple-500 text-purple-500" />
+        <span>{trimmed.replace(/[\[\]]/g, '')}</span>
+      </span>
+    );
+  }
+
+  if (trimmed === '[free]' || trimmed === '[Free]') {
+    return (
+      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-blue-50 text-blue-700 border border-blue-200/80 shadow-2xs shrink-0">
+        <span>Free</span>
+      </span>
+    );
+  }
+
+  // Check custom badge shortcode e.g. [badge: Text] or [badge-emerald: Text]
+  const badgeMatch = trimmed.match(/^\[badge(-[a-z]+)?: ([^\]]+)\]$/i);
+  if (badgeMatch) {
+    const colorName = badgeMatch[1] ? badgeMatch[1].replace('-', '') : 'indigo';
+    const textVal = badgeMatch[2];
+    
+    const colorStyles: Record<string, string> = {
+      emerald: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+      rose: 'bg-rose-50 text-rose-700 border-rose-200',
+      amber: 'bg-amber-50 text-amber-700 border-amber-200',
+      purple: 'bg-purple-50 text-purple-700 border-purple-200',
+      blue: 'bg-blue-50 text-blue-700 border-blue-200',
+      indigo: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+      gray: 'bg-gray-100 text-gray-700 border-gray-200'
+    };
+    
+    const styleClass = colorStyles[colorName] || colorStyles.indigo;
+
+    return (
+      <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-extrabold border shadow-2xs shrink-0 ${styleClass}`}>
+        {textVal}
+      </span>
+    );
+  }
+
+  return parseInlineStyling(content);
+}
+
+interface StyledTableProps {
+  title?: string;
+  subtitle?: string;
+  headers: string[];
+  rows: string[][];
+  key?: string | number;
+}
+
+const StyledTable = ({ title, subtitle, headers, rows }: StyledTableProps) => {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredRows = rows.filter(row => {
+    if (!searchTerm.trim()) return true;
+    return row.some(cell => cell.toLowerCase().includes(searchTerm.toLowerCase()));
+  });
+
+  return (
+    <div className="my-8 rounded-2xl bg-white border border-slate-200/90 shadow-2xs hover:shadow-xs transition-shadow overflow-hidden text-left font-sans">
+      {/* Header Bar if Title or Filter enabled */}
+      {(title || rows.length > 5) && (
+        <div className="p-4 sm:px-5 sm:py-4 bg-gradient-to-r from-slate-50/90 via-white to-blue-50/20 border-b border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            {title && (
+              <div className="flex items-center gap-2.5">
+                <div className="w-7 h-7 rounded-lg bg-blue-50 border border-blue-200/80 text-[rgba(11,48,215)] flex items-center justify-center shrink-0 shadow-2xs">
+                  <Table className="w-4 h-4 stroke-[2.2]" />
+                </div>
+                <h4 className="text-base sm:text-lg font-sans font-extrabold text-slate-900 tracking-tight">
+                  {title}
+                </h4>
+              </div>
+            )}
+            {subtitle && (
+              <p className="text-xs text-slate-500 mt-0.5 font-sans font-normal">
+                {subtitle}
+              </p>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2.5">
+            <span className="text-[11px] font-mono font-bold bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full border border-slate-200 shrink-0">
+              {filteredRows.length} {filteredRows.length === 1 ? 'row' : 'rows'}
+            </span>
+            {rows.length > 4 && (
+              <div className="relative flex-1 sm:w-52">
+                <input
+                  type="text"
+                  placeholder="Filter table rows..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full bg-white border border-slate-200 text-slate-900 placeholder-slate-400 text-xs rounded-xl pl-8 pr-3 py-1.5 focus:outline-none focus:border-[rgba(11,48,215)] focus:ring-2 focus:ring-blue-100/80 font-sans shadow-2xs transition-all"
+                />
+                <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
+                {searchTerm && (
+                  <button 
+                    onClick={() => setSearchTerm('')} 
+                    className="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Table Scroll Wrapper */}
+      <div className="overflow-x-auto custom-scrollbar">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-slate-50/90 border-b border-slate-200/80">
+              {headers.map((header, hIdx) => (
+                <th 
+                  key={hIdx} 
+                  className="px-4.5 py-3 text-xs font-sans font-bold uppercase tracking-wider text-slate-700 bg-slate-50/90 select-none whitespace-nowrap"
+                >
+                  {parseInlineStyling(header)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-150">
+            {filteredRows.length > 0 ? (
+              filteredRows.map((row, rIdx) => (
+                <tr 
+                  key={rIdx} 
+                  className="hover:bg-blue-50/30 transition-colors duration-150 even:bg-slate-50/40"
+                >
+                  {row.map((cell, cIdx) => (
+                    <td 
+                      key={cIdx} 
+                      className={`px-4.5 py-3.5 text-sm font-sans text-slate-700 ${
+                        cIdx === 0 ? 'font-semibold text-slate-900 bg-slate-50/30' : ''
+                      }`}
+                    >
+                      {formatTableCell(cell)}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={headers.length} className="px-4 py-8 text-center text-xs text-slate-500 font-sans italic">
+                  No rows matching "{searchTerm}"
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+// Row splitter helper for table parsing
+function splitRow(line: string): string[] {
+  let cells = line.split('|').map(c => c.trim());
+  if (cells.length > 0 && cells[0] === '') cells.shift();
+  if (cells.length > 0 && cells[cells.length - 1] === '') cells.pop();
+  return cells;
+}
+
+// Parses raw markdown table lines into headers and rows
+function parseTableLines(tableLines: string[]): { headers: string[]; rows: string[][] } {
+  const cleanLines = tableLines
+    .map(l => l.trim())
+    .filter(l => l.length > 0 && (l.startsWith('|') || l.endsWith('|')));
+
+  if (cleanLines.length === 0) return { headers: [], rows: [] };
+
+  const headers = splitRow(cleanLines[0]);
+
+  let rowStartIdx = 1;
+  if (cleanLines.length > 1 && (cleanLines[1].includes('---') || cleanLines[1].includes(':-'))) {
+    rowStartIdx = 2;
+  }
+
+  const rows: string[][] = [];
+  for (let idx = rowStartIdx; idx < cleanLines.length; idx++) {
+    const rowCells = splitRow(cleanLines[idx]);
+    if (rowCells.length > 0) {
+      rows.push(rowCells);
+    }
+  }
+
+  return { headers, rows };
+}
+
+// Slugify helper for Table of Contents anchor links
+export const slugifyHeading = (text: string): string => {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+};
+
+export interface TocItem {
+  id: string;
+  text: string;
+  level: number;
+}
+
+export function extractTableOfContents(markdown: string): TocItem[] {
+  const lines = markdown.split('\n');
+  const items: TocItem[] = [];
+  const idCounts = new Map<string, number>();
+
+  lines.forEach((line) => {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('# ') || trimmed.startsWith('## ') || trimmed.startsWith('### ')) {
+      let level = 1;
+      let text = '';
+      if (trimmed.startsWith('# ')) {
+        level = 1;
+        text = trimmed.replace(/^#\s+/, '').trim();
+      } else if (trimmed.startsWith('## ')) {
+        level = 2;
+        text = trimmed.replace(/^##\s+/, '').trim();
+      } else if (trimmed.startsWith('### ')) {
+        level = 3;
+        text = trimmed.replace(/^###\s+/, '').trim();
+      }
+
+      if (!text) return;
+
+      let baseId = slugifyHeading(text);
+      if (!baseId) baseId = 'heading';
+
+      let id = baseId;
+      const count = idCounts.get(baseId) || 0;
+      if (count > 0) {
+        id = `${baseId}-${count}`;
+      }
+      idCounts.set(baseId, count + 1);
+
+      items.push({ id, text, level });
+    }
+  });
+
+  return items;
+}
+
+// Table of Contents UI Component
+export const TableOfContents = ({ items }: { items: TocItem[] }) => {
+  const [activeId, setActiveId] = useState<string>('');
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const headingElements = items
+        .map(item => document.getElementById(item.id))
+        .filter((el): el is HTMLElement => el !== null);
+
+      let currentActive = '';
+      for (const el of headingElements) {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= 140) {
+          currentActive = el.id;
+        }
+      }
+      if (currentActive) {
+        setActiveId(currentActive);
+      } else if (items.length > 0) {
+        setActiveId(items[0].id);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [items]);
+
+  if (items.length === 0) return null;
+
+  return (
+    <div className="my-8 rounded-2xl bg-gradient-to-b from-gray-50/90 to-white border border-gray-200/80 p-5 shadow-xs transition-all duration-300 text-left">
+      <div className="flex items-center justify-between border-b border-gray-150 pb-3">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg bg-[rgba(11,48,215)]/10 text-[rgba(11,48,215)] flex items-center justify-center">
+            <ListFilter className="w-4 h-4" />
+          </div>
+          <h3 className="text-sm font-sans font-extrabold text-gray-900 tracking-tight uppercase">
+            Table of Contents
+          </h3>
+          <span className="text-[10px] font-mono font-bold bg-gray-100 text-gray-600 px-2.5 py-0.5 rounded-full border border-gray-200">
+            {items.length} Topics
+          </span>
+        </div>
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="text-xs font-mono font-bold text-gray-500 hover:text-[rgba(11,48,215)] transition-colors cursor-pointer px-2.5 py-1 rounded-md hover:bg-blue-50"
+        >
+          {isCollapsed ? 'SHOW TOC ▼' : 'HIDE TOC ▲'}
+        </button>
+      </div>
+
+      {!isCollapsed && (
+        <nav className="mt-3.5 space-y-1 max-h-[380px] overflow-y-auto pr-1 custom-scrollbar">
+          {items.map((item) => {
+            const isActive = activeId === item.id;
+            return (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const target = document.getElementById(item.id);
+                  if (target) {
+                    const yOffset = -90;
+                    const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                    window.scrollTo({ top: y, behavior: 'smooth' });
+                    setActiveId(item.id);
+                  }
+                }}
+                className={`group flex items-center justify-between py-1.5 px-3 rounded-lg text-xs font-sans transition-all duration-200 cursor-pointer ${
+                  item.level === 3 ? 'ml-4 text-gray-500' : item.level === 1 ? 'font-extrabold text-gray-900' : 'font-semibold text-gray-700'
+                } ${
+                  isActive
+                    ? 'bg-[rgba(11,48,215)]/10 text-[rgba(11,48,215)] font-extrabold translate-x-1'
+                    : 'hover:text-gray-900 hover:bg-gray-100/80 hover:translate-x-0.5'
+                }`}
+              >
+                <span className="truncate flex items-center gap-2">
+                  <span className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                    isActive ? 'bg-[rgba(11,48,215)] scale-125' : 'bg-gray-300 group-hover:bg-gray-400'
+                  }`} />
+                  <span className="truncate">{item.text}</span>
+                </span>
+                {isActive && (
+                  <ChevronRight className="w-3.5 h-3.5 text-[rgba(11,48,215)] shrink-0 ml-1" />
+                )}
+              </a>
+            );
+          })}
+        </nav>
+      )}
+    </div>
+  );
+};
+
+// High-fidelity Markdown Parser supporting rich shortcodes, prompts, bold headings & styled lists
 function parseMarkdown(md: string) {
   const lines = md.split('\n');
-  let inList = false;
   let inCode = false;
+  let codeTitle = '';
   let codeContent: string[] = [];
+
+  let inPrompt = false;
+  let promptTitle = '';
+  let promptContent: string[] = [];
   
   let inReveal = false;
   let revealTitle = '';
@@ -182,23 +630,96 @@ function parseMarkdown(md: string) {
   let inQuoteBlock = false;
   let quoteBlockContent: string[] = [];
 
+  let inKeyTakeaways = false;
+  let takeawaysContent: string[] = [];
+
+  let inTableShortcode = false;
+  let tableTitle = '';
+  let tableSubtitle = '';
+  let tableShortcodeContent: string[] = [];
+  let lastProcessedTableLineIdx = -1;
+
   const htmlElements: React.ReactNode[] = [];
+  const headingIdCounts = new Map<string, number>();
+
+  const getHeadingId = (text: string) => {
+    let base = slugifyHeading(text);
+    if (!base) base = 'heading';
+    const count = headingIdCounts.get(base) || 0;
+    const id = count > 0 ? `${base}-${count}` : base;
+    headingIdCounts.set(base, count + 1);
+    return id;
+  };
 
   lines.forEach((line, index) => {
-    // Code block check
+    if (index <= lastProcessedTableLineIdx) {
+      return;
+    }
+
+    // Table Shortcode Check: [table title="..." subtitle="..."] ... [/table]
+    if (line.trim().startsWith('[table') || line.trim().startsWith('[TABLE')) {
+      const titleMatch = line.match(/title="([^"]+)"/i);
+      const subtitleMatch = line.match(/subtitle="([^"]+)"/i);
+      tableTitle = titleMatch ? titleMatch[1] : '';
+      tableSubtitle = subtitleMatch ? subtitleMatch[1] : '';
+
+      const rest = line.replace(/^\[table[^\]]*\]/i, '').trim();
+
+      if (rest.endsWith('[/table]')) {
+        const singleContent = rest.replace(/\[\/table\]$/i, '').trim();
+        const tLines = singleContent.split('\n');
+        const { headers, rows } = parseTableLines(tLines);
+        if (headers.length > 0) {
+          htmlElements.push(
+            <StyledTable key={`tbl-${index}`} title={tableTitle} subtitle={tableSubtitle} headers={headers} rows={rows} />
+          );
+        }
+        tableTitle = '';
+        tableSubtitle = '';
+      } else {
+        inTableShortcode = true;
+        tableShortcodeContent = rest ? [rest] : [];
+      }
+      return;
+    }
+
+    if (inTableShortcode) {
+      if (line.trim().includes('[/table]') || line.trim().includes('[/TABLE]')) {
+        inTableShortcode = false;
+        const cleanLine = line.replace(/\[\/table\]/i, '').trim();
+        if (cleanLine) tableShortcodeContent.push(cleanLine);
+
+        const { headers, rows } = parseTableLines(tableShortcodeContent);
+        if (headers.length > 0) {
+          htmlElements.push(
+            <StyledTable key={`tbl-${index}`} title={tableTitle} subtitle={tableSubtitle} headers={headers} rows={rows} />
+          );
+        }
+        tableShortcodeContent = [];
+        tableTitle = '';
+        tableSubtitle = '';
+      } else {
+        tableShortcodeContent.push(line);
+      }
+      return;
+    }
+    // Fenced Code block check: ```
     if (line.trim().startsWith('```')) {
       if (inCode) {
         inCode = false;
         htmlElements.push(
-          <div key={`code-${index}`} className="my-6 bg-gray-900 rounded-xl p-4 overflow-x-auto border border-gray-800">
-            <pre className="text-xs font-mono text-gray-300 leading-relaxed text-left">
-              {codeContent.join('\n')}
-            </pre>
-          </div>
+          <CodeBlock 
+            key={`code-${index}`} 
+            code={codeContent.join('\n')} 
+            title={codeTitle || "Code & Prompt Template"}
+            language="CODE"
+          />
         );
         codeContent = [];
+        codeTitle = '';
       } else {
         inCode = true;
+        codeTitle = line.trim().replace(/^```/, '').trim();
       }
       return;
     }
@@ -208,14 +729,112 @@ function parseMarkdown(md: string) {
       return;
     }
 
-    // Reveal shortcode container block
+    // Custom Prompt Shortcode: [prompt title="..."] ... [/prompt]
+    if (line.trim().startsWith('[prompt') || line.trim().startsWith('[PROMPT')) {
+      const titleMatch = line.match(/title="([^"]+)"/i);
+      promptTitle = titleMatch ? titleMatch[1] : 'AI Executive Prompt';
+      const rest = line.replace(/^\[prompt[^\]]*\]/i, '').trim();
+
+      if (rest.endsWith('[/prompt]')) {
+        const singleContent = rest.replace(/\[\/prompt\]$/i, '').trim();
+        htmlElements.push(
+          <CodeBlock 
+            key={`prompt-${index}`} 
+            code={singleContent} 
+            title={promptTitle} 
+            language="PROMPT"
+          />
+        );
+      } else {
+        inPrompt = true;
+        promptContent = rest ? [rest] : [];
+      }
+      return;
+    }
+
+    if (inPrompt) {
+      if (line.trim().includes('[/prompt]') || line.trim().includes('[/PROMPT]')) {
+        inPrompt = false;
+        const cleanLine = line.replace(/\[\/prompt\]/i, '').trim();
+        if (cleanLine) {
+          promptContent.push(cleanLine);
+        }
+        htmlElements.push(
+          <CodeBlock 
+            key={`prompt-${index}`} 
+            code={promptContent.join('\n')} 
+            title={promptTitle} 
+            language="PROMPT"
+          />
+        );
+        promptContent = [];
+      } else {
+        promptContent.push(line);
+      }
+      return;
+    }
+
+    // Key Takeaways Shortcode: [key-takeaways] ... [/key-takeaways]
+    if (line.trim().startsWith('[key-takeaways') || line.trim().startsWith('[KEY-TAKEAWAYS')) {
+      const rest = line.replace(/^\[key-takeaways\]/i, '').trim();
+      if (rest.endsWith('[/key-takeaways]')) {
+        const singleContent = rest.replace(/\[\/key-takeaways\]$/i, '').trim();
+        htmlElements.push(
+          <div key={`takeaways-${index}`} className="my-8 rounded-2xl bg-gradient-to-br from-blue-50/70 via-indigo-50/50 to-purple-50/40 border border-blue-200/80 p-6 shadow-xs text-left">
+            <div className="flex items-center gap-2.5 mb-3">
+              <div className="w-7 h-7 rounded-lg bg-[rgba(11,48,215)] text-white flex items-center justify-center shadow-xs">
+                <Flame className="w-4 h-4 fill-current" />
+              </div>
+              <h4 className="text-base font-sans font-extrabold text-gray-900 tracking-tight uppercase">
+                Key Takeaways & System Impact
+              </h4>
+            </div>
+            <div className="text-sm sm:text-base text-gray-800 leading-relaxed font-sans">
+              {parseInlineStyling(singleContent)}
+            </div>
+          </div>
+        );
+      } else {
+        inKeyTakeaways = true;
+        takeawaysContent = rest ? [rest] : [];
+      }
+      return;
+    }
+
+    if (inKeyTakeaways) {
+      if (line.trim().includes('[/key-takeaways]')) {
+        inKeyTakeaways = false;
+        const cleanLine = line.replace(/\[\/key-takeaways\]/i, '').trim();
+        if (cleanLine) takeawaysContent.push(cleanLine);
+        htmlElements.push(
+          <div key={`takeaways-${index}`} className="my-8 rounded-2xl bg-gradient-to-br from-blue-50/70 via-indigo-50/50 to-purple-50/40 border border-blue-200/80 p-6 shadow-xs text-left">
+            <div className="flex items-center gap-2.5 mb-3">
+              <div className="w-7 h-7 rounded-lg bg-[rgba(11,48,215)] text-white flex items-center justify-center shadow-xs">
+                <Flame className="w-4 h-4 fill-current" />
+              </div>
+              <h4 className="text-base font-sans font-extrabold text-gray-900 tracking-tight uppercase">
+                Key Takeaways & System Impact
+              </h4>
+            </div>
+            <div className="text-sm sm:text-base text-gray-800 leading-relaxed font-sans space-y-2">
+              {parseMarkdown(takeawaysContent.join('\n'))}
+            </div>
+          </div>
+        );
+        takeawaysContent = [];
+      } else {
+        takeawaysContent.push(line);
+      }
+      return;
+    }
+
+    // Reveal shortcode container block: [reveal title="..."]
     if (line.trim().startsWith('[reveal') || line.trim().startsWith('[REVEAL')) {
       const titleMatch = line.match(/title="([^"]+)"/i);
       revealTitle = titleMatch ? titleMatch[1] : 'Click to Reveal Section';
       const rest = line.replace(/^\[reveal[^\]]*\]/i, '').trim();
       
       if (rest.endsWith('[/reveal]')) {
-        // Single line reveal shortcode
         const singleContent = rest.replace(/\[\/reveal\]$/i, '').trim();
         htmlElements.push(
           <RevealSection key={`reveal-${index}`} title={revealTitle}>
@@ -257,11 +876,11 @@ function parseMarkdown(md: string) {
           noteContent.push(cleanLine);
         }
         htmlElements.push(
-          <div key={`note-${index}`} className="my-6 p-4 bg-[#f0f7ff] border-l-4 border-blue-500 rounded-r-xl flex gap-3 items-start text-left">
-            <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+          <div key={`note-${index}`} className="my-6 p-4.5 bg-blue-50/60 border-l-4 border-[rgba(11,48,215)] rounded-r-xl flex gap-3 items-start text-left shadow-2xs">
+            <Info className="w-5 h-5 text-[rgba(11,48,215)] shrink-0 mt-0.5" />
             <div className="flex-1">
-              <span className="text-xs font-mono font-bold text-blue-600 uppercase tracking-wider block mb-0.5">Note</span>
-              <div className="text-sm text-blue-900 leading-relaxed font-sans">
+              <span className="text-xs font-mono font-extrabold text-[rgba(11,48,215)] uppercase tracking-wider block mb-0.5">Insight Note</span>
+              <div className="text-sm text-gray-800 leading-relaxed font-sans font-medium">
                 {parseInlineStyling(noteContent.join(' '))}
               </div>
             </div>
@@ -283,11 +902,11 @@ function parseMarkdown(md: string) {
           warningContent.push(cleanLine);
         }
         htmlElements.push(
-          <div key={`warning-${index}`} className="my-6 p-4 bg-[#fff9eb] border-l-4 border-amber-500 rounded-r-xl flex gap-3 items-start text-left">
+          <div key={`warning-${index}`} className="my-6 p-4.5 bg-amber-50/70 border-l-4 border-amber-500 rounded-r-xl flex gap-3 items-start text-left shadow-2xs">
             <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
             <div className="flex-1">
-              <span className="text-xs font-mono font-bold text-amber-600 uppercase tracking-wider block mb-0.5">Warning</span>
-              <div className="text-sm text-amber-900 leading-relaxed font-sans">
+              <span className="text-xs font-mono font-extrabold text-amber-700 uppercase tracking-wider block mb-0.5">Important Warning</span>
+              <div className="text-sm text-amber-950 leading-relaxed font-sans font-medium">
                 {parseInlineStyling(warningContent.join(' '))}
               </div>
             </div>
@@ -309,11 +928,11 @@ function parseMarkdown(md: string) {
           tipContent.push(cleanLine);
         }
         htmlElements.push(
-          <div key={`tip-${index}`} className="my-6 p-4 bg-[#f2fcf5] border-l-4 border-emerald-500 rounded-r-xl flex gap-3 items-start text-left">
-            <Lightbulb className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+          <div key={`tip-${index}`} className="my-6 p-4.5 bg-emerald-50/70 border-l-4 border-emerald-500 rounded-r-xl flex gap-3 items-start text-left shadow-2xs">
+            <Lightbulb className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
             <div className="flex-1">
-              <span className="text-xs font-mono font-bold text-emerald-600 uppercase tracking-wider block mb-0.5">Pro Tip</span>
-              <div className="text-sm text-emerald-950 leading-relaxed font-sans">
+              <span className="text-xs font-mono font-extrabold text-emerald-700 uppercase tracking-wider block mb-0.5">Pro Strategy Tip</span>
+              <div className="text-sm text-emerald-950 leading-relaxed font-sans font-medium">
                 {parseInlineStyling(tipContent.join(' '))}
               </div>
             </div>
@@ -335,9 +954,9 @@ function parseMarkdown(md: string) {
           quoteBlockContent.push(cleanLine);
         }
         htmlElements.push(
-          <div key={`quote-${index}`} className="my-8 p-6 bg-gray-50 border-l-4 border-gray-900 rounded-r-2xl relative text-left">
+          <div key={`quote-${index}`} className="my-8 p-6 bg-gradient-to-r from-gray-50 to-slate-50 border-l-4 border-gray-900 rounded-r-2xl relative text-left shadow-2xs">
             <Quote className="w-8 h-8 text-gray-200 absolute top-3 right-4 transform rotate-180 pointer-events-none" />
-            <p className="text-base sm:text-lg italic text-gray-800 font-medium leading-relaxed relative z-10">
+            <p className="text-base sm:text-lg italic text-gray-900 font-bold leading-relaxed relative z-10 font-sans">
               "{parseInlineStyling(quoteBlockContent.join(' '))}"
             </p>
           </div>
@@ -390,11 +1009,11 @@ function parseMarkdown(md: string) {
       if (rest.endsWith('[/note]')) {
         const singleContent = rest.replace(/\[\/note\]$/i, '').trim();
         htmlElements.push(
-          <div key={`note-${index}`} className="my-6 p-4 bg-[#f0f7ff] border-l-4 border-blue-500 rounded-r-xl flex gap-3 items-start text-left">
-            <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+          <div key={`note-${index}`} className="my-6 p-4.5 bg-blue-50/60 border-l-4 border-[rgba(11,48,215)] rounded-r-xl flex gap-3 items-start text-left shadow-2xs">
+            <Info className="w-5 h-5 text-[rgba(11,48,215)] shrink-0 mt-0.5" />
             <div className="flex-1">
-              <span className="text-xs font-mono font-bold text-blue-600 uppercase tracking-wider block mb-0.5">Note</span>
-              <div className="text-sm text-blue-900 leading-relaxed font-sans">
+              <span className="text-xs font-mono font-extrabold text-[rgba(11,48,215)] uppercase tracking-wider block mb-0.5">Insight Note</span>
+              <div className="text-sm text-gray-800 leading-relaxed font-sans font-medium">
                 {parseInlineStyling(singleContent)}
               </div>
             </div>
@@ -413,11 +1032,11 @@ function parseMarkdown(md: string) {
       if (rest.endsWith('[/warning]')) {
         const singleContent = rest.replace(/\[\/warning\]$/i, '').trim();
         htmlElements.push(
-          <div key={`warning-${index}`} className="my-6 p-4 bg-[#fff9eb] border-l-4 border-amber-500 rounded-r-xl flex gap-3 items-start text-left">
+          <div key={`warning-${index}`} className="my-6 p-4.5 bg-amber-50/70 border-l-4 border-amber-500 rounded-r-xl flex gap-3 items-start text-left shadow-2xs">
             <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
             <div className="flex-1">
-              <span className="text-xs font-mono font-bold text-amber-600 uppercase tracking-wider block mb-0.5">Warning</span>
-              <div className="text-sm text-amber-900 leading-relaxed font-sans">
+              <span className="text-xs font-mono font-extrabold text-amber-700 uppercase tracking-wider block mb-0.5">Important Warning</span>
+              <div className="text-sm text-amber-950 leading-relaxed font-sans font-medium">
                 {parseInlineStyling(singleContent)}
               </div>
             </div>
@@ -436,11 +1055,11 @@ function parseMarkdown(md: string) {
       if (rest.endsWith('[/tip]')) {
         const singleContent = rest.replace(/\[\/tip\]$/i, '').trim();
         htmlElements.push(
-          <div key={`tip-${index}`} className="my-6 p-4 bg-[#f2fcf5] border-l-4 border-emerald-500 rounded-r-xl flex gap-3 items-start text-left">
-            <Lightbulb className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+          <div key={`tip-${index}`} className="my-6 p-4.5 bg-emerald-50/70 border-l-4 border-emerald-500 rounded-r-xl flex gap-3 items-start text-left shadow-2xs">
+            <Lightbulb className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
             <div className="flex-1">
-              <span className="text-xs font-mono font-bold text-emerald-600 uppercase tracking-wider block mb-0.5">Pro Tip</span>
-              <div className="text-sm text-emerald-950 leading-relaxed font-sans">
+              <span className="text-xs font-mono font-extrabold text-emerald-700 uppercase tracking-wider block mb-0.5">Pro Strategy Tip</span>
+              <div className="text-sm text-emerald-950 leading-relaxed font-sans font-medium">
                 {parseInlineStyling(singleContent)}
               </div>
             </div>
@@ -459,9 +1078,9 @@ function parseMarkdown(md: string) {
       if (rest.endsWith('[/quote]')) {
         const singleContent = rest.replace(/\[\/quote\]$/i, '').trim();
         htmlElements.push(
-          <div key={`quote-${index}`} className="my-8 p-6 bg-gray-50 border-l-4 border-gray-900 rounded-r-2xl relative text-left">
+          <div key={`quote-${index}`} className="my-8 p-6 bg-gradient-to-r from-gray-50 to-slate-50 border-l-4 border-gray-900 rounded-r-2xl relative text-left shadow-2xs">
             <Quote className="w-8 h-8 text-gray-200 absolute top-3 right-4 transform rotate-180 pointer-events-none" />
-            <p className="text-base sm:text-lg italic text-gray-800 font-medium leading-relaxed relative z-10">
+            <p className="text-base sm:text-lg italic text-gray-900 font-bold leading-relaxed relative z-10 font-sans">
               "{parseInlineStyling(singleContent)}"
             </p>
           </div>
@@ -477,9 +1096,11 @@ function parseMarkdown(md: string) {
     if (line.trim().startsWith('[check]') || line.trim().startsWith('[CHECK]')) {
       const content = line.replace(/^\[check\]/i, '').replace(/\[\/check\]/i, '').trim();
       htmlElements.push(
-        <div key={`check-${index}`} className="flex items-start gap-2.5 my-2.5 text-left">
-          <CheckCircle className="w-4.5 h-4.5 text-[rgba(11,48,215)] shrink-0 mt-0.5" />
-          <span className="text-gray-700 text-base leading-relaxed font-sans">
+        <div key={`check-${index}`} className="flex items-start gap-3 my-3 text-left">
+          <div className="w-5 h-5 rounded-full bg-[rgba(11,48,215)]/10 text-[rgba(11,48,215)] flex items-center justify-center shrink-0 mt-0.5">
+            <Check className="w-3.5 h-3.5 stroke-[3]" />
+          </div>
+          <span className="text-gray-800 text-base leading-relaxed font-sans font-medium">
             {parseInlineStyling(content)}
           </span>
         </div>
@@ -487,33 +1108,63 @@ function parseMarkdown(md: string) {
       return;
     }
 
-    // List Check
+    // Horizontal Rule replacement (---)
+    if (line.trim() === '---' || line.trim() === '***') {
+      htmlElements.push(
+        <div key={`hr-${index}`} className="my-10 flex items-center justify-center gap-3 select-none">
+          <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent flex-1" />
+          <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />
+          <span className="w-2 h-2 rounded-full bg-[rgba(11,48,215)]/40" />
+          <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />
+          <div className="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent flex-1" />
+        </div>
+      );
+      return;
+    }
+
+    // List Check (- or *) with custom styled colored bullet point indicator
     if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
-      if (!inList) {
-        inList = true;
-      }
       const itemText = line.replace(/^[-*]\s+/, '');
       const formattedText = parseInlineStyling(itemText);
       htmlElements.push(
-        <li key={`li-${index}`} className="text-gray-700 text-base sm:text-[17px] leading-relaxed ml-6 list-disc mb-2.5 font-sans">
-          {formattedText}
+        <li key={`li-${index}`} className="flex items-start gap-3 my-2.5 text-gray-800 text-base sm:text-[17px] leading-relaxed font-sans">
+          <span className="w-2 h-2 rounded-full bg-[rgba(11,48,215)] shrink-0 mt-2.5 shadow-2xs" />
+          <span className="flex-1">{formattedText}</span>
         </li>
       );
       return;
-    } else {
-      inList = false;
     }
 
-    // Headers Check
+    // Numbered List Check (1., 2., 25., etc.) with stylish gradient number badge
+    const numberedListMatch = line.trim().match(/^(\d+)\.\s+(.*)/);
+    if (numberedListMatch) {
+      const num = numberedListMatch[1];
+      const itemText = numberedListMatch[2];
+      const formattedText = parseInlineStyling(itemText);
+      htmlElements.push(
+        <li key={`num-li-${index}`} className="flex items-start gap-3.5 my-3 text-gray-800 text-base sm:text-[17px] leading-relaxed font-sans group">
+          <span className="w-6 h-6 rounded-full bg-gradient-to-br from-[rgba(11,48,215)] to-[rgba(0,143,255)] text-white text-xs font-mono font-extrabold flex items-center justify-center shrink-0 mt-0.5 shadow-2xs group-hover:scale-105 transition-transform">
+            {num}
+          </span>
+          <span className="flex-1">{formattedText}</span>
+        </li>
+      );
+      return;
+    }
+
+    // Step Headings Check
     if (line.trim().startsWith('### Step ') || line.trim().startsWith('### STEP ') || line.trim().startsWith('### step ')) {
       const rawText = line.replace(/^###\s+/, '');
       const match = rawText.match(/^(Step\s+\d+):\s*(.*)/i);
+      const headingText = rawText;
+      const headingId = getHeadingId(headingText);
+
       if (match) {
         const stepNum = match[1];
         const stepTitle = match[2];
         htmlElements.push(
-          <div key={`step-${index}`} className="mt-8 mb-4 flex items-center gap-3 bg-gray-50/75 border border-gray-100 p-4.5 rounded-2xl shadow-xs text-left">
-            <span className="shrink-0 bg-gradient-to-r from-[rgba(0,143,255)] to-[rgba(11,48,215)] text-white text-[11px] font-mono font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-xs">
+          <div id={headingId} key={`step-${index}`} className="mt-10 mb-4 flex items-center gap-3 bg-gradient-to-r from-gray-50 to-blue-50/30 border border-gray-200/80 p-4.5 rounded-2xl shadow-2xs text-left scroll-mt-24">
+            <span className="shrink-0 bg-gradient-to-r from-[rgba(0,143,255)] to-[rgba(11,48,215)] text-white text-[11px] font-mono font-extrabold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-xs">
               {stepNum}
             </span>
             <h4 className="text-lg sm:text-xl font-sans font-extrabold text-gray-900 tracking-tight">
@@ -523,7 +1174,7 @@ function parseMarkdown(md: string) {
         );
       } else {
         htmlElements.push(
-          <h4 key={`h3-${index}`} className="text-lg sm:text-xl font-sans font-semibold text-gray-800 mt-8 mb-3 tracking-tight">
+          <h4 id={headingId} key={`h3-${index}`} className="text-lg sm:text-xl font-sans font-extrabold text-gray-900 mt-8 mb-3 tracking-tight scroll-mt-24">
             {rawText}
           </h4>
         );
@@ -531,19 +1182,63 @@ function parseMarkdown(md: string) {
       return;
     }
 
+    // H3 Headings
     if (line.trim().startsWith('### ')) {
+      const headingText = line.replace(/^###\s+/, '');
+      const headingId = getHeadingId(headingText);
+
+      // Check if it's a numbered rank heading like "### 1. ChatGPT Plus (OpenAI)" or "### #1 — ChatGPT Plus"
+      const rankMatch = headingText.match(/^(?:#|Tool\s+)?(\d+)[\.\s—-]+(.*)/i);
+      if (rankMatch) {
+        const rankNum = rankMatch[1].padStart(2, '0');
+        const toolTitle = rankMatch[2].trim();
+        htmlElements.push(
+          <div id={headingId} key={`rank-heading-${index}`} className="mt-10 mb-5 p-4 sm:p-4.5 rounded-2xl bg-gradient-to-r from-slate-50/90 via-white to-blue-50/30 border border-slate-200/90 shadow-2xs hover:border-blue-200/90 transition-all flex items-center gap-3.5 scroll-mt-24 text-left group">
+            <span className="shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-[rgba(11,48,215)] to-[rgba(0,143,255)] text-white text-sm font-mono font-bold flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
+              #{rankNum}
+            </span>
+            <div className="flex-1 min-w-0">
+              <h4 className="text-lg sm:text-xl font-sans font-extrabold text-slate-900 tracking-tight truncate">
+                {toolTitle}
+              </h4>
+            </div>
+            <span className="hidden sm:inline-flex text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-blue-50 text-[rgba(11,48,215)] border border-blue-100/80">
+              Rank #{rankNum}
+            </span>
+          </div>
+        );
+        return;
+      }
+
       htmlElements.push(
-        <h4 key={`h3-${index}`} className="text-lg sm:text-xl font-sans font-semibold text-gray-800 mt-8 mb-3 tracking-tight">
-          {line.replace(/^###\s+/, '')}
+        <h4 id={headingId} key={`h3-${index}`} className="text-lg sm:text-xl font-sans font-extrabold text-gray-900 mt-8 mb-3 tracking-tight scroll-mt-24 text-left">
+          {headingText}
         </h4>
       );
       return;
     }
+
+    // H2 Headings
     if (line.trim().startsWith('## ')) {
+      const headingText = line.replace(/^##\s+/, '');
+      const headingId = getHeadingId(headingText);
       htmlElements.push(
-        <h3 key={`h2-${index}`} className="text-xl sm:text-2xl font-sans font-semibold text-gray-900 mt-10 mb-4 border-b border-gray-100 pb-2 tracking-tight">
-          {line.replace(/^##\s+/, '')}
+        <h3 id={headingId} key={`h2-${index}`} className="text-xl sm:text-2xl font-sans font-extrabold text-gray-900 mt-12 mb-4 pb-2 border-b-2 border-gray-100 tracking-tight scroll-mt-24 text-left flex items-center gap-2.5">
+          <span className="w-2 h-6 rounded-xs bg-[rgba(11,48,215)] shrink-0" />
+          <span>{headingText}</span>
         </h3>
+      );
+      return;
+    }
+
+    // H1 Headings
+    if (line.trim().startsWith('# ')) {
+      const headingText = line.replace(/^#\s+/, '');
+      const headingId = getHeadingId(headingText);
+      htmlElements.push(
+        <h2 id={headingId} key={`h1-${index}`} className="text-2xl sm:text-3xl font-sans font-extrabold text-gray-900 mt-14 mb-5 pb-3 border-b-2 border-[rgba(11,48,215)]/20 tracking-tight scroll-mt-24 text-left">
+          {headingText}
+        </h2>
       );
       return;
     }
@@ -551,55 +1246,27 @@ function parseMarkdown(md: string) {
     // Blockquote Check
     if (line.trim().startsWith('> ')) {
       htmlElements.push(
-        <blockquote key={`quote-${index}`} className="border-l-4 border-[rgba(11,48,215)] pl-4 my-6 italic text-gray-700 bg-blue-50/20 py-2 rounded-r-lg">
+        <blockquote key={`quote-${index}`} className="border-l-4 border-[rgba(11,48,215)] pl-4.5 my-6 italic text-gray-800 bg-blue-50/30 py-3 rounded-r-xl font-sans font-medium text-left">
           {line.replace(/^>\s+/, '')}
         </blockquote>
       );
       return;
     }
 
-    // Table Parser
-    if (line.trim().startsWith('|') && lines[index+1]?.trim().startsWith('| :---')) {
-      // It is a table header, let's parse table rows
-      return; // Skip structural dash lines or individual lines to avoid duplicating tables
-    }
+    // Standard Markdown Table Parser
+    if (line.trim().startsWith('|')) {
+      const tableLines: string[] = [];
+      let tempIdx = index;
+      while (tempIdx < lines.length && lines[tempIdx].trim().startsWith('|')) {
+        tableLines.push(lines[tempIdx]);
+        tempIdx++;
+      }
+      lastProcessedTableLineIdx = tempIdx - 1;
 
-    // Check if current or neighboring lines are part of a table to format simple tables
-    if (line.trim().startsWith('|') && !line.includes(':---')) {
-      const cells = line.split('|').map(c => c.trim()).filter(c => c.length > 0);
-      const isFirstRow = index < lines.length - 1 && lines[index + 1]?.includes(':---');
-      
-      if (isFirstRow) {
+      const { headers, rows } = parseTableLines(tableLines);
+      if (headers.length > 0) {
         htmlElements.push(
-          <div key={`table-wrapper-${index}`} className="my-6 overflow-x-auto border border-gray-200/65 rounded-xl">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-gray-50 border-b border-gray-200">
-                  {cells.map((cell, cIdx) => (
-                    <th key={cIdx} className="px-4 py-3 text-xs font-mono font-bold uppercase tracking-wider text-gray-600 bg-gray-100/40">
-                      {cell}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {/* Find consecutive table rows to render */}
-                {lines.slice(index + 2).map((tblLine, tblIdx) => {
-                  if (!tblLine.trim().startsWith('|')) return null;
-                  const rowCells = tblLine.split('|').map(c => c.trim()).filter(c => c.length > 0);
-                  return (
-                    <tr key={tblIdx} className="border-b border-gray-150 hover:bg-gray-50/50 transition-colors">
-                      {rowCells.map((rCell, rIdx) => (
-                        <td key={rIdx} className="px-4 py-3 text-sm text-gray-700 font-sans">
-                          {rCell}
-                        </td>
-                      ))}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <StyledTable key={`tbl-${index}`} headers={headers} rows={rows} />
         );
       }
       return;
@@ -608,7 +1275,7 @@ function parseMarkdown(md: string) {
     // Normal Paragraph
     if (line.trim() !== '') {
       htmlElements.push(
-        <p key={`p-${index}`} className="text-gray-700 text-base sm:text-[17px] leading-relaxed mb-6 font-sans">
+        <p key={`p-${index}`} className="text-gray-800 text-base sm:text-[17px] leading-relaxed mb-6 font-sans">
           {parseInlineStyling(line)}
         </p>
       );
@@ -1114,17 +1781,32 @@ export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
         </div>
 
         {/* Feature Hero Image */}
-        <div className="rounded-2xl overflow-hidden aspect-video w-full bg-gray-100 shadow-xs mb-6">
+        <div className="relative rounded-2xl overflow-hidden aspect-video w-full bg-gray-100 shadow-xs mb-6 group">
           <img
             src={post.coverImage}
             alt={post.title}
             referrerPolicy="no-referrer"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.01]"
           />
+          <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <a
+              href={`https://www.pinterest.com/pin/create/button/?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&media=${encodeURIComponent(post.coverImage)}&description=${encodeURIComponent(post.title)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#E60023] text-white font-sans font-extrabold text-xs uppercase tracking-wider px-4 py-2 rounded-full flex items-center gap-1.5 shadow-lg hover:bg-[#b8001c] active:scale-95 transition-all cursor-pointer"
+              title="Save to Pinterest"
+            >
+              <PinterestIcon className="w-3.5 h-3.5 fill-current" />
+              <span>Save Pin</span>
+            </a>
+          </div>
         </div>
 
         {/* Centered spacious reading layout with zero overlapping elements */}
         <div className="max-w-3xl mx-auto">
+          {/* Automatic Table of Contents */}
+          <TableOfContents items={extractTableOfContents(post.content)} />
+
           <div className="space-y-4 text-left leading-relaxed">
             <div className="prose prose-teal max-w-none">
               {parseMarkdown(post.content)}

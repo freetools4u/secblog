@@ -85,12 +85,21 @@ export default function App() {
       const pathName = window.location.pathname;
       setIsNotFound(false);
 
-      const categoryMatch = pathName.match(/\/category\/([^/]+)/);
-      if (categoryMatch) {
-        const catId = decodeURIComponent(categoryMatch[1]);
-        setActiveCategory(catId);
-        setSelectedPost(null);
-        return;
+      // Check if it's the category overview page (/category or /category/) or category detail
+      if (pathName.endsWith('/category') || pathName.endsWith('/category/') || pathName.includes('/category')) {
+        const categoryMatch = pathName.match(/\/category\/([^/]+)/);
+        if (categoryMatch) {
+          const catId = decodeURIComponent(categoryMatch[1]);
+          setActiveCategory(catId);
+          setSelectedPost(null);
+          setIsNotFound(false);
+          return;
+        } else {
+          setActiveCategory('all');
+          setSelectedPost(null);
+          setIsNotFound(false);
+          return;
+        }
       }
 
       // Match a known post slug anywhere in the path, typically at the end

@@ -13,7 +13,7 @@ export interface BlogPost {
   title: string;
   excerpt: string;
   content: string; // Markdown or rich text
-  category: 'AI Productivity' | 'Career & Hiring' | 'Education' | 'Design & Focus';
+  category: string;
   tags: string[];
   readTime: string;
   date: string;

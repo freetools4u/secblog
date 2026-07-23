@@ -54,15 +54,90 @@ export default function SEOHead({ title, description, keywords, canonicalUrl = '
 
     let schemaData: any = {
       "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Zenire Blog",
-      "url": "https://blog.zenire.in",
-      "description": "A high-performance blog platform covering AI Productivity, Careers, and Education.",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://blog.zenire.in/?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://blog.zenire.in/#website",
+          "name": "Zenire Blog",
+          "url": "https://blog.zenire.in",
+          "description": "High-density technical publication covering AI Productivity, Career & Hiring, Education, and Design & Focus.",
+          "publisher": {
+            "@type": "Organization",
+            "name": "Zenire",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://blog.zenire.in/favicon.ico"
+            }
+          },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://blog.zenire.in/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "@id": "https://blog.zenire.in/#navigation",
+          "name": "Primary Categories",
+          "hasPart": [
+            {
+              "@type": "WebPage",
+              "name": "AI Productivity",
+              "url": "https://blog.zenire.in/category/AI%20Productivity",
+              "description": "Prompt engineering, automated workflows, and agentic productivity tools."
+            },
+            {
+              "@type": "WebPage",
+              "name": "Career & Hiring",
+              "url": "https://blog.zenire.in/category/Career%20%26%20Hiring",
+              "description": "CV construction, technical recruitment trends, and professional advancement."
+            },
+            {
+              "@type": "WebPage",
+              "name": "Education",
+              "url": "https://blog.zenire.in/category/Education",
+              "description": "Cognitive learning frameworks, personalized knowledge graphs, and pedagogy."
+            },
+            {
+              "@type": "WebPage",
+              "name": "Design & Focus",
+              "url": "https://blog.zenire.in/category/Design%20%26%20Focus",
+              "description": "Digital minimalism, ergonomics, and peak mental performance environments."
+            }
+          ]
+        },
+        {
+          "@type": "ItemList",
+          "@id": "https://blog.zenire.in/#sitelinks",
+          "name": "Main Site Categories",
+          "itemListElement": [
+            {
+              "@type": "SiteNavigationElement",
+              "position": 1,
+              "name": "AI Productivity",
+              "url": "https://blog.zenire.in/category/AI%20Productivity"
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 2,
+              "name": "Career & Hiring",
+              "url": "https://blog.zenire.in/category/Career%20%26%20Hiring"
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 3,
+              "name": "Education",
+              "url": "https://blog.zenire.in/category/Education"
+            },
+            {
+              "@type": "SiteNavigationElement",
+              "position": 4,
+              "name": "Site Categories: Design & Focus",
+              "url": "https://blog.zenire.in/category/Design%20%26%20Focus"
+            }
+          ]
+        }
+      ]
     };
 
     if (post) {
@@ -71,11 +146,12 @@ export default function SEOHead({ title, description, keywords, canonicalUrl = '
         "@type": post.schemaType || "BlogPosting",
         "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": `${canonicalUrl}/post/${post.slug}`
+          "@id": `${canonicalUrl}/${post.slug}`
         },
         "headline": post.title,
         "description": post.metaDescription || post.excerpt,
         "image": post.coverImage,
+        "articleSection": post.category,
         "author": {
           "@type": "Person",
           "name": post.author.name,

@@ -54,6 +54,14 @@ export const getCategoryStyle = (category: string, title?: string) => {
         arrowIcon: 'text-blue-600 group-hover:text-white',
         numberBg: 'bg-blue-50/70 text-blue-600',
       };
+    case 'Design & Focus':
+      return {
+        text: 'DESIGN & FOCUS',
+        badge: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+        arrowBg: 'bg-emerald-50 group-hover:bg-emerald-600',
+        arrowIcon: 'text-emerald-600 group-hover:text-white',
+        numberBg: 'bg-emerald-50/70 text-emerald-600',
+      };
     default:
       return {
         text: 'RESOURCES',

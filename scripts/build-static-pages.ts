@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { ARTICLES } from '../src/articles/index';
+import { BlogPost } from '../src/types';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -10,22 +10,76 @@ const rootDir = path.resolve(__dirname, '..');
 const distDir = path.resolve(rootDir, 'dist');
 const indexPath = path.resolve(distDir, 'index.html');
 
-function generateStaticPages() {
+async function loadArticlesForBuild(): Promise<BlogPost[]> {
+  const articlesDir = path.resolve(rootDir, 'src', 'articles');
+  const files = fs.readdirSync(articlesDir);
+  const posts: BlogPost[] = [];
+
+  for (const file of files) {
+    if (file.endsWith('.ts') && file !== 'index.ts') {
+      const fullPath = path.resolve(articlesDir, file);
+      const mod = await import(fullPath);
+      const post = mod.post || mod.default;
+      if (post && post.slug) {
+        posts.push(post);
+      }
+    }
+  }
+
+  posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  return posts;
+}
+
+async function generateStaticPages() {
   if (!fs.existsSync(indexPath)) {
     console.error('Error: dist/index.html does not exist. Run "vite build" first.');
     process.exit(1);
   }
 
-  const baseHtmlTemplate = fs.readFileSync(indexPath, 'utf-8');
+  const articles = await loadArticlesForBuild();
+  console.log(`Loaded ${articles.length} articles dynamically for static build.`);
+
+  const rawHtml = fs.readFileSync(indexPath, 'utf-8');
+
+  // Inject dynamic base tag calculation into head so assets load properly from any subfolder or 404 route on GitHub Pages
+  const baseScript = `<script>
+    (function() {
+      var path = window.location.pathname;
+      var segments = path.split('/').filter(Boolean);
+      var baseHref = '/';
+      if (window.location.hostname.endsWith('.github.io') && segments.length > 0) {
+        baseHref = '/' + segments[0] + '/';
+      }
+      document.write('<base href="' + baseHref + '" />');
+    })();
+  </script>`;
+
+  const baseHtmlTemplate = rawHtml.includes('<head>')
+    ? rawHtml.replace('<head>', `<head>\n    ${baseScript}`)
+    : `${baseScript}\n${rawHtml}`;
 
   console.log('Generating static HTML pages for each article and category...');
 
-  // 1. Generate standalone page for each article under dist/<slug>/index.html & dist/<slug>.html
-  ARTICLES.forEach((post) => {
+  // 1. Update primary dist/index.html with the resilient baseScript
+  fs.writeFileSync(indexPath, baseHtmlTemplate, 'utf-8');
+
+  // 2. Create dist/category/index.html & dist/category.html for /category route
+  const categoryOverviewDir = path.resolve(distDir, 'category');
+  fs.mkdirSync(categoryOverviewDir, { recursive: true });
+
+  let categoryOverviewHtml = baseHtmlTemplate.replace(
+    /<title>.*?<\/title>/gi,
+    `<title>Categories - Zenire Blog</title>`
+  );
+  fs.writeFileSync(path.resolve(categoryOverviewDir, 'index.html'), categoryOverviewHtml, 'utf-8');
+  fs.writeFileSync(path.resolve(distDir, 'category.html'), categoryOverviewHtml, 'utf-8');
+  console.log(' ✓ Created static pages for /category/ & /category.html');
+
+  // 3. Generate standalone page for each article under dist/<slug>/index.html & dist/<slug>.html
+  articles.forEach((post) => {
     const articleDir = path.resolve(distDir, post.slug);
     fs.mkdirSync(articleDir, { recursive: true });
 
-    // Customize meta tags for SEO and Social Cards
     let articleHtml = baseHtmlTemplate;
 
     // Replace Title
@@ -53,54 +107,45 @@ function generateStaticPages() {
 
     articleHtml = articleHtml.replace('</head>', `${metaTags}\n  </head>`);
 
-    // Fix relative asset paths for subfolders (e.g. ./assets/ -> ../assets/)
-    // Replaces ./assets or "assets/ with ../assets/
-    const subfolderArticleHtml = articleHtml
-      .replace(/src="\.\/assets\//g, 'src="../assets/')
-      .replace(/href="\.\/assets\//g, 'href="../assets/')
-      .replace(/src="assets\//g, 'src="../assets/')
-      .replace(/href="assets\//g, 'href="../assets/');
-
-    // Write dist/<slug>/index.html
-    fs.writeFileSync(path.resolve(articleDir, 'index.html'), subfolderArticleHtml, 'utf-8');
-
-    // Also write dist/<slug>.html for direct extensionless access
-    const directFileArticleHtml = articleHtml
-      .replace(/src="\.\/assets\//g, 'src="./assets/')
-      .replace(/href="\.\/assets\//g, 'href="./assets/');
-    fs.writeFileSync(path.resolve(distDir, `${post.slug}.html`), directFileArticleHtml, 'utf-8');
+    // Write dist/<slug>/index.html & dist/<slug>.html
+    fs.writeFileSync(path.resolve(articleDir, 'index.html'), articleHtml, 'utf-8');
+    fs.writeFileSync(path.resolve(distDir, `${post.slug}.html`), articleHtml, 'utf-8');
 
     console.log(` ✓ Created standalone static page: dist/${post.slug}/index.html & dist/${post.slug}.html`);
   });
 
-  // 2. Generate static pages for Categories
-  const categories = ['AI Productivity', 'Career & Hiring', 'Education', 'Design & Focus'];
+  // 4. Dynamically derive all categories from loaded articles
+  const categories = Array.from(new Set(articles.map(a => a.category))).filter(Boolean);
   categories.forEach((cat) => {
     const encodedCat = encodeURIComponent(cat);
+
+    // Directory for encoded category (e.g. category/AI%20Productivity/index.html)
     const categoryDir = path.resolve(distDir, 'category', encodedCat);
     fs.mkdirSync(categoryDir, { recursive: true });
 
-    let catHtml = baseHtmlTemplate;
-    catHtml = catHtml.replace(
+    let catHtml = baseHtmlTemplate.replace(
       /<title>.*?<\/title>/gi,
       `<title>${escapeXml(cat)} Articles - Zenire Blog</title>`
     );
 
-    const subfolderCatHtml = catHtml
-      .replace(/src="\.\/assets\//g, 'src="../../assets/')
-      .replace(/href="\.\/assets\//g, 'href="../../assets/')
-      .replace(/src="assets\//g, 'src="../../assets/')
-      .replace(/href="assets\//g, 'href="../../assets/');
+    fs.writeFileSync(path.resolve(categoryDir, 'index.html'), catHtml, 'utf-8');
+    fs.writeFileSync(path.resolve(distDir, 'category', `${encodedCat}.html`), catHtml, 'utf-8');
 
-    fs.writeFileSync(path.resolve(categoryDir, 'index.html'), subfolderCatHtml, 'utf-8');
-    console.log(` ✓ Created static category page: dist/category/${encodedCat}/index.html`);
+    // Also create unencoded category directory if cat has spaces (e.g. category/AI Productivity/index.html)
+    if (cat !== encodedCat) {
+      const unencodedDir = path.resolve(distDir, 'category', cat);
+      fs.mkdirSync(unencodedDir, { recursive: true });
+      fs.writeFileSync(path.resolve(unencodedDir, 'index.html'), catHtml, 'utf-8');
+    }
+
+    console.log(` ✓ Created static category page for ${cat}`);
   });
 
-  // 3. Create 404.html fallback for GitHub Pages client-side routing
-  fs.copyFileSync(indexPath, path.resolve(distDir, '404.html'));
+  // 5. Create 404.html fallback for GitHub Pages client-side routing
+  fs.writeFileSync(path.resolve(distDir, '404.html'), baseHtmlTemplate, 'utf-8');
   console.log(' ✓ Created dist/404.html for GitHub Pages fallback');
 
-  // 4. Create .nojekyll file to prevent GitHub Pages from bypassing underscores
+  // 6. Create .nojekyll file to prevent GitHub Pages from bypassing underscores
   fs.writeFileSync(path.resolve(distDir, '.nojekyll'), '', 'utf-8');
   console.log(' ✓ Created dist/.nojekyll');
 

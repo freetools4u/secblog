@@ -87,52 +87,74 @@ export default function Footer({ onSelectCategory }: FooterProps) {
             </h4>
             <ul className="space-y-2.5 text-xs">
               <li>
-                <button
-                  onClick={() => {
+                <a
+                  href="/category"
+                  onClick={(e) => {
+                    e.preventDefault();
                     onSelectCategory('all');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                   className="text-gray-400 hover:text-white transition-colors cursor-pointer flex items-center gap-2"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-[rgba(11,48,215)]/40" />
-                  <span>All Archives</span>
-                </button>
+                  <span>All Publications</span>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => {
+                <a
+                  href="/category/AI%20Productivity"
+                  onClick={(e) => {
+                    e.preventDefault();
                     onSelectCategory('AI Productivity');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                   className="text-gray-400 hover:text-white transition-colors cursor-pointer flex items-center gap-2"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-[rgba(11,48,215)]/40" />
-                  <span>AI Productivity & Tools</span>
-                </button>
+                  <span>AI Productivity</span>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => {
+                <a
+                  href="/category/Career%20%26%20Hiring"
+                  onClick={(e) => {
+                    e.preventDefault();
                     onSelectCategory('Career & Hiring');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                   className="text-gray-400 hover:text-white transition-colors cursor-pointer flex items-center gap-2"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-[rgba(11,48,215)]/40" />
-                  <span>Career & Growth</span>
-                </button>
+                  <span>Career & Hiring</span>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => {
+                <a
+                  href="/category/Education"
+                  onClick={(e) => {
+                    e.preventDefault();
                     onSelectCategory('Education');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
                   className="text-gray-400 hover:text-white transition-colors cursor-pointer flex items-center gap-2"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-[rgba(11,48,215)]/40" />
-                  <span>Education Blueprints</span>
-                </button>
+                  <span>Education</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/category/Design%20%26%20Focus"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onSelectCategory('Design & Focus');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="text-gray-400 hover:text-white transition-colors cursor-pointer flex items-center gap-2"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-[rgba(11,48,215)]/40" />
+                  <span>Design & Focus</span>
+                </a>
               </li>
             </ul>
           </div>

@@ -1,22 +1,25 @@
+/// <reference types="vite/client" />
 import { BlogPost } from '../types';
 
-import post1 from './ai-automation-guide-2026';
-import post2 from './modern-zen-office-blueprint-2026';
-import post3 from './building-ai-proof-resume-2026';
-import post4 from './personalized-knowledge-graphs-education';
-import post5 from './perfect-context-window-llm-2026';
-import post6 from './psychology-digital-minimalism-2026';
-import post7 from './ai-productivity-blueprint-2026';
+// Vite's eager glob import dynamically loads all article files in /src/articles/
+// Any new .ts file placed in this folder is automatically discovered without any hardcoding!
+const globModules = import.meta.glob<Record<string, any>>('./*.ts', { eager: true });
 
-export const ARTICLES: BlogPost[] = [
-  post1,
-  post2,
-  post3,
-  post4,
-  post5,
-  post6,
-  post7
-];
+const articlesList: BlogPost[] = [];
+
+for (const filePath in globModules) {
+  if (filePath.endsWith('index.ts')) continue;
+  const mod = globModules[filePath];
+  const article = mod?.post || mod?.default;
+  if (article && article.slug) {
+    articlesList.push(article);
+  }
+}
+
+// Sort articles by publication date descending (newest first)
+articlesList.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+export const ARTICLES: BlogPost[] = articlesList;
 
 export const getArticleBySlug = (slug: string): BlogPost | undefined => {
   return ARTICLES.find(article => article.slug === slug);
@@ -24,7 +27,7 @@ export const getArticleBySlug = (slug: string): BlogPost | undefined => {
 
 export const getArticlesByCategory = (category: string): BlogPost[] => {
   if (category === 'all') return ARTICLES;
-  return ARTICLES.filter(article => article.category === category);
+  return ARTICLES.filter(article => article.category.toLowerCase() === category.toLowerCase());
 };
 
 export const getFeaturedArticles = (): BlogPost[] => {

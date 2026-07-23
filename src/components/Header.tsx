@@ -46,8 +46,12 @@ export default function Header({
                 <Menu className="w-5.5 h-5.5 sm:w-6 sm:h-6" />
               </button>
 
-              <button
-                onClick={() => handleCategorySelect('all')}
+              <a
+                href="/category"
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleCategorySelect('all');
+                }}
                 className="flex items-center gap-1.5 cursor-pointer group text-left"
               >
                 <div className="h-7 w-7 sm:h-8 sm:w-8 bg-white text-[rgba(11,48,215)] rounded-md flex items-center justify-center font-sans font-extrabold text-xs sm:text-sm shadow-xs group-hover:scale-105 transition-transform">
@@ -56,17 +60,42 @@ export default function Header({
                 <span className="text-white font-sans font-black tracking-tight text-base sm:text-lg">
                   Zenire
                 </span>
-              </button>
+              </a>
+
+              {/* Primary Top Navigation Bar - 4 Primary Categories for Google Sitelinks */}
+              <nav aria-label="Primary Categories" className="hidden md:flex items-center gap-1.5 ml-2 xl:ml-6">
+                {curatedCategories.map((cat) => {
+                  const isSelected = activeCategory === cat.id;
+                  const catUrl = `/category/${encodeURIComponent(cat.id)}`;
+                  return (
+                    <a
+                      key={cat.id}
+                      href={catUrl}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleCategorySelect(cat.id);
+                      }}
+                      className={`px-2.5 py-1 rounded-md text-xs font-sans font-bold transition-all duration-150 whitespace-nowrap ${
+                        isSelected
+                          ? 'bg-white text-[rgba(11,48,215)] shadow-xs'
+                          : 'text-white/90 hover:text-white hover:bg-white/10'
+                      }`}
+                    >
+                      {cat.name}
+                    </a>
+                  );
+                })}
+              </nav>
 
               {/* Social Media Links */}
               <div className="hidden lg:flex items-center gap-3.5 text-white/90 ml-2">
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                <a href="#" className="hover:text-white transition-colors">
                   <Facebook className="w-3.5 h-3.5" />
                 </a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                <a href="#" className="hover:text-white transition-colors">
                   <Twitter className="w-3.5 h-3.5" />
                 </a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                <a href="#" className="hover:text-white transition-colors">
                   <Instagram className="w-3.5 h-3.5" />
                 </a>
               </div>
@@ -175,10 +204,15 @@ export default function Header({
                   <div className="space-y-1">
                     {curatedCategories.map((cat) => {
                       const isSelected = activeCategory === cat.id;
+                      const catUrl = `/category/${encodeURIComponent(cat.id)}`;
                       return (
-                        <button
+                        <a
                           key={cat.id}
-                          onClick={() => handleCategorySelect(cat.id)}
+                          href={catUrl}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleCategorySelect(cat.id);
+                          }}
                           className={`w-full text-left px-3 py-2 rounded-lg text-sm font-sans font-medium transition-all cursor-pointer flex items-center justify-between ${
                             isSelected
                               ? 'bg-blue-50 text-[rgba(11,48,215)] font-semibold'
@@ -187,7 +221,7 @@ export default function Header({
                         >
                           <span>{cat.name}</span>
                           {isSelected && <div className="h-1.5 w-1.5 rounded-full bg-[rgba(11,48,215)]" />}
-                        </button>
+                        </a>
                       );
                     })}
                   </div>
