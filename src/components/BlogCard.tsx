@@ -1,6 +1,7 @@
 import React from 'react';
 import { BlogPost } from '../types';
 import { Calendar, Clock, ArrowRight } from 'lucide-react';
+import { getImageUrl } from '../utils/image';
 
 interface BlogCardProps {
   key?: string | number;
@@ -90,7 +91,7 @@ export default function BlogCard({ post, onClick }: BlogCardProps) {
       {/* Cover Image Wrapper with clean ratio */}
       <div className="relative w-full aspect-[16/10] overflow-hidden bg-gray-50 shrink-0">
         <img
-          src={post.coverImage}
+          src={getImageUrl(post.coverImage)}
           alt={post.title}
           referrerPolicy="no-referrer"
           className="object-cover w-full h-full group-hover:scale-102 transition-transform duration-500"

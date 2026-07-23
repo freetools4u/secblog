@@ -3,6 +3,7 @@ import { BlogPost } from '../types';
 import { BLOG_POSTS } from '../data/blogPosts';
 import { ArrowLeft, Calendar, Clock, Share2, Twitter, Linkedin, Github, Copy, Check, Bookmark, Heart, Trash2, MessageSquare, MessageCircle, Slack, Phone, Facebook, Info, AlertTriangle, Lightbulb, CheckCircle, Quote, Home, ChevronRight, BookOpen, ArrowRight, Flame, Star, ListFilter, Table, Search, X } from 'lucide-react';
 import { getCategoryStyle } from './BlogCard';
+import { getImageUrl } from '../utils/image';
 
 const getInitials = (name: string) => {
   const parts = name.trim().split(/\s+/);
@@ -1783,14 +1784,14 @@ export default function BlogPostComponent({ post, onBack }: BlogPostProps) {
         {/* Feature Hero Image */}
         <div className="relative rounded-2xl overflow-hidden aspect-video w-full bg-gray-100 shadow-xs mb-6 group">
           <img
-            src={post.coverImage}
+            src={getImageUrl(post.coverImage)}
             alt={post.title}
             referrerPolicy="no-referrer"
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.01]"
           />
           <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <a
-              href={`https://www.pinterest.com/pin/create/button/?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&media=${encodeURIComponent(post.coverImage)}&description=${encodeURIComponent(post.title)}`}
+              href={`https://www.pinterest.com/pin/create/button/?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&media=${encodeURIComponent(getImageUrl(post.coverImage))}&description=${encodeURIComponent(post.title)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="bg-[#E60023] text-white font-sans font-extrabold text-xs uppercase tracking-wider px-4 py-2 rounded-full flex items-center gap-1.5 shadow-lg hover:bg-[#b8001c] active:scale-95 transition-all cursor-pointer"

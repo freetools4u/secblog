@@ -177,6 +177,9 @@ Sitemap: https://blog.zenire.in/sitemap.xml
     res.json({ success: true, comments: commentsDB[slug] || [] });
   });
 
+  // Serve static files from public directory first
+  app.use(express.static(path.resolve(process.cwd(), 'public')));
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
@@ -187,7 +190,8 @@ Sitemap: https://blog.zenire.in/sitemap.xml
 
     // Serve index.html transformed by Vite for all non-API GET requests to support direct loading / SPA routing in dev
     app.get('*', async (req, res, next) => {
-      if (req.originalUrl.startsWith('/api/')) {
+      // Don't intercept API routes or direct static asset requests (images, fonts, scripts)
+      if (req.originalUrl.startsWith('/api/') || /\.(png|jpe?g|gif|svg|ico|webp|css|js|map|json|woff2?|ttf|eot)$/i.test(req.path)) {
         return next();
       }
       try {
