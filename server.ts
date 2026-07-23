@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+import fs from "fs";
 import { createServer as createViteServer } from "vite";
 
 interface Comment {
@@ -10,24 +11,94 @@ interface Comment {
   likes: number;
 }
 
-// In-memory storage for comments keyed by slug
-const commentsDB: Record<string, Comment[]> = {
-  "personalized-knowledge-graphs-education": [
-    {
-      id: 'seed-1',
-      name: 'Sarah Jenkins',
-      content: `This is incredibly insightful. I implemented the automated triage process on our support email pipeline using your exact routing blueprint and we saved roughly 10 hours in the first week. The sitemap generation advice is also critical for indexing. Thank you!`,
-      date: '2026-07-16',
-      likes: 5
+// Helper to generate dynamic sitemap.xml on demand
+async function generateDynamicSitemapXml(): Promise<string> {
+  const articlesDir = path.resolve(process.cwd(), 'src', 'articles');
+  const files = fs.readdirSync(articlesDir);
+  const posts: { slug: string; date: string; category: string }[] = [];
+
+  for (const file of files) {
+    if (file.endsWith('.ts') && file !== 'index.ts') {
+      try {
+        const fullPath = path.resolve(articlesDir, file);
+        const mod = await import(fullPath);
+        const post = mod.post || mod.default;
+        if (post && post.slug) {
+          posts.push({
+            slug: post.slug,
+            date: post.date || new Date().toISOString().split('T')[0],
+            category: post.category || 'AI Productivity',
+          });
+        }
+      } catch (e) {
+        console.error(`Error loading article ${file} for sitemap:`, e);
+      }
     }
-  ]
-};
+  }
+
+  posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  const categories = [
+    'AI Productivity',
+    'Career & Hiring',
+    'Education',
+    'Design & Focus'
+  ];
+
+  const today = new Date().toISOString().split('T')[0];
+
+  const categoryUrlsXml = categories.map(cat => `  <url>
+    <loc>https://blog.zenire.in/category/${encodeURIComponent(cat)}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>`).join('\n');
+
+  const postUrlsXml = posts.map(post => `  <url>
+    <loc>https://blog.zenire.in/${post.slug}</loc>
+    <lastmod>${post.date}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>`).join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Main Home Page -->
+  <url>
+    <loc>https://blog.zenire.in/</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Categories -->
+${categoryUrlsXml}
+
+  <!-- Articles -->
+${postUrlsXml}
+</urlset>`;
+}
+
+// In-memory storage for comments keyed by slug
+const commentsDB: Record<string, Comment[]> = {};
 
 async function startServer() {
   const app = express();
   const PORT = 3000;
 
   app.use(express.json());
+
+  // Dynamic Sitemap XML Endpoint
+  app.get("/sitemap.xml", async (req, res) => {
+    try {
+      const xml = await generateDynamicSitemapXml();
+      res.header("Content-Type", "application/xml");
+      res.status(200).send(xml);
+    } catch (err) {
+      console.error("Error generating sitemap:", err);
+      res.status(500).send("Error generating sitemap");
+    }
+  });
 
   // API endpoints for comments
   app.get("/api/comments/:slug", (req, res) => {

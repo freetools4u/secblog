@@ -179,10 +179,10 @@ export default function Header({
                   </div>
                   <div>
                     <span className="text-base font-sans font-bold text-gray-900 tracking-tight block leading-none">
-                      Zenire
+                      Zenire Knowledge
                     </span>
-                    <span className="text-[9px] font-mono font-medium tracking-wider text-[rgba(11,48,215)] uppercase block mt-1.5">
-                      Knowledge Menu
+                    <span className="text-[10px] font-mono font-semibold tracking-wider text-[rgba(11,48,215)] uppercase block mt-1.5">
+                      Tech for Genz
                     </span>
                   </div>
                 </div>

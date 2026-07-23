@@ -149,6 +149,48 @@ async function generateStaticPages() {
   fs.writeFileSync(path.resolve(distDir, '.nojekyll'), '', 'utf-8');
   console.log(' ✓ Created dist/.nojekyll');
 
+  // 7. Dynamically generate sitemap.xml for dist and public folders
+  const today = new Date().toISOString().split('T')[0];
+  const allCategories = ['AI Productivity', 'Career & Hiring', 'Education', 'Design & Focus'];
+  
+  const categoryUrlsXml = allCategories.map(cat => `  <url>
+    <loc>https://blog.zenire.in/category/${encodeURIComponent(cat)}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>`).join('\n');
+
+  const postUrlsXml = articles.map(post => `  <url>
+    <loc>https://blog.zenire.in/${post.slug}</loc>
+    <lastmod>${post.date || today}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>`).join('\n');
+
+  const dynamicSitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Main Home Page -->
+  <url>
+    <loc>https://blog.zenire.in/</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Categories -->
+${categoryUrlsXml}
+
+  <!-- Active Articles -->
+${postUrlsXml}
+</urlset>`;
+
+  fs.writeFileSync(path.resolve(distDir, 'sitemap.xml'), dynamicSitemapContent, 'utf-8');
+  const publicDir = path.resolve(rootDir, 'public');
+  if (fs.existsSync(publicDir)) {
+    fs.writeFileSync(path.resolve(publicDir, 'sitemap.xml'), dynamicSitemapContent, 'utf-8');
+  }
+  console.log(' ✓ Dynamically generated sitemap.xml in dist/ and public/');
+
   console.log('Static pages generation completed successfully!');
 }
 

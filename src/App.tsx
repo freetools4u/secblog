@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 import BlogCard, { getCategoryStyle } from './components/BlogCard';
 import BlogPostComponent from './components/BlogPost';
 import SEOHead from './components/SEOHead';
+import NotFoundPage from './components/NotFoundPage';
 
 const CATEGORY_META: Record<string, { title: string; desc: string; accentColor: string; badgeText: string }> = {
   'AI Productivity': {
@@ -54,7 +55,7 @@ const getBasePath = () => {
 export default function App() {
   const [posts, setPosts] = useState<BlogPost[]>(() => [...BLOG_POSTS]);
   const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 3; // Sets a standard, visually interactive page size for pagination
+  const postsPerPage = 10; // Homepage displays max 10 latest posts per page
 
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -74,16 +75,19 @@ export default function App() {
     return () => clearInterval(interval);
   }, [posts.length]);
 
-  // Reset pagination to first page when category or search changes
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [activeCategory, searchQuery]);
-
-  // Sync page view state with URL pathname to allow direct shareable SEO friendly links
+  // Sync page view state with URL pathname & query parameters to allow direct shareable SEO friendly links
   useEffect(() => {
     const handlePathChange = () => {
       const pathName = window.location.pathname;
+      const searchParams = new URLSearchParams(window.location.search);
+      const pageParam = parseInt(searchParams.get('page') || '1', 10);
+      const urlPage = isNaN(pageParam) || pageParam < 1 ? 1 : pageParam;
+
       setIsNotFound(false);
+
+      const pageMatch = pathName.match(/\/page\/(\d+)/);
+      const pageFromPath = pageMatch ? parseInt(pageMatch[1], 10) : null;
+      const effectivePage = pageFromPath || urlPage;
 
       // Check if it's the category overview page (/category or /category/) or category detail
       if (pathName.endsWith('/category') || pathName.endsWith('/category/') || pathName.includes('/category')) {
@@ -92,11 +96,13 @@ export default function App() {
           const catId = decodeURIComponent(categoryMatch[1]);
           setActiveCategory(catId);
           setSelectedPost(null);
+          setCurrentPage(effectivePage);
           setIsNotFound(false);
           return;
         } else {
           setActiveCategory('all');
           setSelectedPost(null);
+          setCurrentPage(effectivePage);
           setIsNotFound(false);
           return;
         }
@@ -121,10 +127,10 @@ export default function App() {
       }
 
       const segments = pathName.split('/').filter(Boolean);
-      // On local/custom domain, segments.length is 0. On GitHub Pages, segments.length is 1 (the repo name).
-      if (segments.length <= 1) {
+      if (segments.length <= 1 || pageMatch) {
         setSelectedPost(null);
         setActiveCategory('all');
+        setCurrentPage(effectivePage);
         return;
       }
 
@@ -137,6 +143,19 @@ export default function App() {
     window.addEventListener('popstate', handlePathChange);
     return () => window.removeEventListener('popstate', handlePathChange);
   }, []);
+
+  // Handle page change and sync with browser URL
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    let targetUrl = basePath || '';
+    if (activeCategory === 'all') {
+      targetUrl += page > 1 ? `/?page=${page}` : '/';
+    } else {
+      targetUrl += `/category/${encodeURIComponent(activeCategory)}${page > 1 ? `?page=${page}` : ''}`;
+    }
+    window.history.pushState(null, '', targetUrl);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   // Filter posts based on category and search query
   const filteredPosts = posts.filter((post) => {
@@ -197,17 +216,24 @@ export default function App() {
         post: selectedPost,
       };
     }
+    if (isNotFound) {
+      return {
+        title: '404 Page Not Found',
+        description: 'The requested page or publication could not be found on Zenire Knowledge.',
+        keywords: ['404', 'not found', 'zenire knowledge'],
+      };
+    }
     if (activeCategory !== 'all') {
       return {
-        title: `Latest Guides in ${activeCategory}`,
-        description: `Explore highly-researched, professional publications covering ${activeCategory}. Built for immediate implementation.`,
-        keywords: [activeCategory.toLowerCase(), 'tutorial', 'best practices', 'resources'],
+        title: `${activeCategory} Articles`,
+        description: `Explore high-density technical publications, benchmarks, and strategic insights covering ${activeCategory} on Zenire Blog.`,
+        keywords: [activeCategory.toLowerCase(), 'ai productivity', 'guides', 'zenire blog', 'best practices'],
       };
     }
     return {
-      title: 'Zenire Knowledge Platform - AI Productivity, Careers & Education',
-      description: 'Explore deep-dive technical articles and strategies for AI automation loops, professional resumes, and cognitive learning.',
-      keywords: ['ai productivity', 'career strategies', 'modern education portfolio'],
+      title: 'Zenire Blog - AI Productivity, Career & Hiring, Education & Design',
+      description: 'Zenire Blog is a high-density technical publication covering AI Productivity, Career & Hiring, Education, and Design & Focus.',
+      keywords: ['ai productivity', 'ai tools', 'career and hiring', 'education', 'design and focus', 'zenire blog'],
     };
   };
 
@@ -261,20 +287,13 @@ export default function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="py-16 text-center max-w-md mx-auto"
             >
-              <h2 className="text-2xl font-sans font-extrabold text-gray-900 tracking-tight">
-                Publication Not Found
-              </h2>
-              <p className="text-gray-500 text-xs mt-1 leading-relaxed">
-                We couldn't resolve this slug in our static database. It might have been migrated or re-indexed.
-              </p>
-              <button
-                onClick={handleBackToFeed}
-                className="mt-4 px-4 py-2 bg-[#2563eb] text-white font-mono text-xs font-bold rounded-lg hover:bg-[#2563eb]/90 transition-all cursor-pointer shadow-xs"
-              >
-                Return to home archive
-              </button>
+              <NotFoundPage
+                onBackToHome={handleBackToFeed}
+                onSelectCategory={handleCategorySelect}
+                onSelectPost={handleSelectPost}
+                popularPosts={popularPosts.slice(0, 3)}
+              />
             </motion.div>
           )}
 
@@ -379,13 +398,10 @@ export default function App() {
                         </div>
 
                         {/* Beautiful Pagination Controls */}
-                        {filteredPosts.length > 0 && (
+                        {filteredPosts.length > 0 && totalPages > 1 && (
                           <div className="flex items-center justify-between pt-4.5 font-mono text-xs">
                             <button
-                              onClick={() => {
-                                setCurrentPage(prev => Math.max(prev - 1, 1));
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                              }}
+                              onClick={() => handlePageChange(Math.max(currentPage - 1, 1))}
                               disabled={currentPage === 1}
                               className="px-3 py-1.5 rounded-lg border border-gray-100 hover:border-gray-200 disabled:opacity-50 disabled:hover:border-gray-100 text-gray-700 bg-white shadow-xs cursor-pointer disabled:cursor-not-allowed transition-all duration-150 flex items-center gap-1 font-bold"
                             >
@@ -396,10 +412,7 @@ export default function App() {
                               {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                                 <button
                                   key={page}
-                                  onClick={() => {
-                                    setCurrentPage(page);
-                                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                                  }}
+                                  onClick={() => handlePageChange(page)}
                                   className={`w-7.5 h-7.5 rounded-lg flex items-center justify-center font-bold transition-all duration-150 cursor-pointer ${
                                     currentPage === page
                                       ? 'bg-gradient-to-r from-[rgba(0,143,255)] via-[rgba(11,48,215)] to-[rgba(80,13,174)] text-white shadow-sm'
@@ -412,10 +425,7 @@ export default function App() {
                             </div>
 
                             <button
-                              onClick={() => {
-                                setCurrentPage(prev => Math.min(prev + 1, totalPages));
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                              }}
+                              onClick={() => handlePageChange(Math.min(currentPage + 1, totalPages))}
                               disabled={currentPage === totalPages}
                               className="px-3 py-1.5 rounded-lg border border-gray-100 hover:border-gray-200 disabled:opacity-50 disabled:hover:border-gray-100 text-gray-700 bg-white shadow-xs cursor-pointer disabled:cursor-not-allowed transition-all duration-150 flex items-center gap-1 font-bold"
                             >

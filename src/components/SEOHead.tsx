@@ -9,29 +9,31 @@ interface SEOHeadProps {
   post?: BlogPost;
 }
 
-export default function SEOHead({ title, description, keywords, canonicalUrl = 'https://blog.zenire.in', post }: SEOHeadProps) {
+export default function SEOHead({ title, description, keywords, canonicalUrl, post }: SEOHeadProps) {
   useEffect(() => {
-    // Dynamically update document title
-    const fullTitle = `${title} | Zenire Blog`;
+    // Standardize Title formatting without redundancy
+    const fullTitle = title.includes('Zenire Blog') ? title : `${title} | Zenire Blog`;
     document.title = fullTitle;
 
-    // Dynamically update meta description
-    let metaDescriptionElement = document.querySelector('meta[name="description"]');
-    if (!metaDescriptionElement) {
-      metaDescriptionElement = document.createElement('meta');
-      metaDescriptionElement.setAttribute('name', 'description');
-      document.head.appendChild(metaDescriptionElement);
-    }
-    metaDescriptionElement.setAttribute('content', description);
+    // Derived current URL
+    const currentCanonical = canonicalUrl || (post 
+      ? `https://blog.zenire.in/${post.slug}` 
+      : (typeof window !== 'undefined' ? window.location.href : 'https://blog.zenire.in'));
 
-    // Dynamically update meta keywords
-    let metaKeywordsElement = document.querySelector('meta[name="keywords"]');
-    if (!metaKeywordsElement) {
-      metaKeywordsElement = document.createElement('meta');
-      metaKeywordsElement.setAttribute('name', 'keywords');
-      document.head.appendChild(metaKeywordsElement);
-    }
-    metaKeywordsElement.setAttribute('content', keywords.join(', '));
+    // Helper to set or update meta tags
+    const setMetaTag = (selector: string, attribute: string, attributeValue: string, content: string) => {
+      let element = document.querySelector(selector);
+      if (!element) {
+        element = document.createElement('meta');
+        element.setAttribute(attribute, attributeValue);
+        document.head.appendChild(element);
+      }
+      element.setAttribute('content', content);
+    };
+
+    // Primary Meta Tags
+    setMetaTag('meta[name="description"]', 'name', 'description', description);
+    setMetaTag('meta[name="keywords"]', 'name', 'keywords', keywords.join(', '));
 
     // Update canonical link
     let canonicalElement = document.querySelector('link[rel="canonical"]');
@@ -40,7 +42,25 @@ export default function SEOHead({ title, description, keywords, canonicalUrl = '
       canonicalElement.setAttribute('rel', 'canonical');
       document.head.appendChild(canonicalElement);
     }
-    canonicalElement.setAttribute('href', canonicalUrl);
+    canonicalElement.setAttribute('href', currentCanonical);
+
+    // OpenGraph Tags
+    setMetaTag('meta[property="og:site_name"]', 'property', 'og:site_name', 'Zenire Blog');
+    setMetaTag('meta[property="og:type"]', 'property', 'og:type', post ? 'article' : 'website');
+    setMetaTag('meta[property="og:title"]', 'property', 'og:title', fullTitle);
+    setMetaTag('meta[property="og:description"]', 'property', 'og:description', description);
+    setMetaTag('meta[property="og:url"]', 'property', 'og:url', currentCanonical);
+    if (post?.coverImage) {
+      setMetaTag('meta[property="og:image"]', 'property', 'og:image', post.coverImage);
+    }
+
+    // Twitter Tags
+    setMetaTag('meta[name="twitter:card"]', 'name', 'twitter:card', 'summary_large_image');
+    setMetaTag('meta[name="twitter:title"]', 'name', 'twitter:title', fullTitle);
+    setMetaTag('meta[name="twitter:description"]', 'name', 'twitter:description', description);
+    if (post?.coverImage) {
+      setMetaTag('meta[name="twitter:image"]', 'name', 'twitter:image', post.coverImage);
+    }
 
     // Dynamic JSON-LD Schema Markup injection
     const existingSchema = document.getElementById('zenire-jsonld');
@@ -146,7 +166,7 @@ export default function SEOHead({ title, description, keywords, canonicalUrl = '
         "@type": post.schemaType || "BlogPosting",
         "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": `${canonicalUrl}/${post.slug}`
+          "@id": currentCanonical
         },
         "headline": post.title,
         "description": post.metaDescription || post.excerpt,
@@ -173,11 +193,7 @@ export default function SEOHead({ title, description, keywords, canonicalUrl = '
 
     schemaScript.text = JSON.stringify(schemaData, null, 2);
     document.head.appendChild(schemaScript);
-
-    return () => {
-      // Clean up dynamic schema elements on unmount if necessary
-    };
   }, [title, description, keywords, canonicalUrl, post]);
 
-  return null; // Side-effect only component
+  return null;
 }

@@ -53,7 +53,7 @@ export default function Footer({ onSelectCategory }: FooterProps) {
                 </span>
               </a>
               <p className="text-sm text-gray-400 leading-relaxed max-w-md">
-                Publishing curated engineering concepts, career blueprints, and educational insights for high performance and elite readability.
+                Zenire Knowledge — Tech for Genz. Publishing curated engineering concepts, career blueprints, and educational insights for high performance and elite readability.
               </p>
             </div>
 
@@ -177,7 +177,9 @@ export default function Footer({ onSelectCategory }: FooterProps) {
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex flex-col gap-1.5 sm:gap-1.5 w-full sm:w-auto">
             <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-3 text-[11px] font-mono text-gray-500 text-center sm:text-left">
-              <span>© 2026 Zenire Blog. Designed with minimal, elegant layout aesthetics.</span>
+              <span>© 2026 Zenire Knowledge. All rights reserved.</span>
+              <span className="hidden sm:inline text-gray-800">•</span>
+              <span className="text-gray-400 font-sans">Tech for Genz</span>
               <span className="hidden sm:inline text-gray-800">|</span>
               <a 
                 href="/sitemap.xml" 
