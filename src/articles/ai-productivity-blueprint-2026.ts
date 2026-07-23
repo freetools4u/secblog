@@ -1,7 +1,7 @@
 import { BlogPost } from '../types';
 
 export const post: BlogPost = {
-  id: '4',
+  id: '7',
   slug: 'ai-productivity-blueprint-2026',
   title: 'The AI Productivity Blueprint for 2026: 17 Proven Strategies to Save 10+ Hours Every Week',
   excerpt:
