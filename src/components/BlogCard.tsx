@@ -31,7 +31,7 @@ export const getCategoryStyle = (category: string, title?: string) => {
   }
   
   switch (category) {
-    case 'AI Productivity':
+    case 'ai-productivity':
       return {
         text: 'AI TOOLS',
         badge: 'bg-violet-50 text-violet-600 border-violet-100',
@@ -39,7 +39,7 @@ export const getCategoryStyle = (category: string, title?: string) => {
         arrowIcon: 'text-violet-600 group-hover:text-white',
         numberBg: 'bg-violet-50/70 text-violet-600',
       };
-    case 'Career & Hiring':
+    case 'career-hiring':
       return {
         text: 'CAREER',
         badge: 'bg-orange-50 text-orange-600 border-orange-100',
@@ -47,7 +47,7 @@ export const getCategoryStyle = (category: string, title?: string) => {
         arrowIcon: 'text-orange-600 group-hover:text-white',
         numberBg: 'bg-orange-50/70 text-orange-600',
       };
-    case 'Education':
+    case 'education':
       return {
         text: 'EDUCATION',
         badge: 'bg-blue-50 text-blue-600 border-blue-100',
@@ -55,7 +55,7 @@ export const getCategoryStyle = (category: string, title?: string) => {
         arrowIcon: 'text-blue-600 group-hover:text-white',
         numberBg: 'bg-blue-50/70 text-blue-600',
       };
-    case 'Design & Focus':
+    case 'design-focus':
       return {
         text: 'DESIGN & FOCUS',
         badge: 'bg-emerald-50 text-emerald-600 border-emerald-100',
