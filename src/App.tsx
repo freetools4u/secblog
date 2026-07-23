@@ -11,25 +11,25 @@ import SEOHead from './components/SEOHead';
 import NotFoundPage from './components/NotFoundPage';
 
 const CATEGORY_META: Record<string, { title: string; desc: string; accentColor: string; badgeText: string }> = {
-  'AI Productivity': {
+  'ai-productivity': {
     title: 'AI Productivity & Tools',
     desc: 'Deep-dives into prompt engineering, automated developer workflows, intelligent agents, and cutting-edge productivity multipliers.',
     accentColor: 'bg-emerald-50 text-emerald-700 border-emerald-100',
     badgeText: 'Artificial Intelligence'
   },
-  'Career & Hiring': {
+  'career-hiring': {
     title: 'Career & Professional Growth',
     desc: 'Expert blueprints for CV construction, technical interview preparation, salary negotiation, and ascending the professional ladder.',
     accentColor: 'bg-blue-50 text-blue-700 border-blue-100',
     badgeText: 'Professional Dev'
   },
-  'Education': {
+  'education': {
     title: 'Education & Learning Blueprints',
     desc: 'High-density cognitive frameworks, dynamic study schedules, digital portfolios, and modern educational strategies.',
     accentColor: 'bg-purple-50 text-purple-700 border-purple-100',
     badgeText: 'Pedagogy & Design'
   },
-  'Design & Focus': {
+  'design-focus': {
     title: 'Design, Aesthetics & Mental Focus',
     desc: 'Visual craftsmanship, typographic balance, minimal user experience patterns, and peak cognitive performance structures.',
     accentColor: 'bg-amber-50 text-amber-700 border-amber-100',
